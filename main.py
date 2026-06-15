@@ -4,29 +4,36 @@ from pathlib import Path
 
 def run_analyzer():
 
-    path_algorithm = Path("tests") / "algorithm_darwin.php"
-    
-    if not path_algorithm.exists():
-        print(f"Error: File not found {path_algorithm}")
-        return
+    algorithms = [
+        ("tests/algorithm_darwin.php", "DarwinDiaz"),
+        ("tests/algorithm_gabriel.php", "GabrielTumbaco"),
+    ]
 
     lexer = PhpLexer()
-    
-    logger = LexerLogger(member_name="DarwinDiaz")
 
-    with open(path_algorithm, "r", encoding="utf-8") as file:
-        text = file.read()
-    
-    lexer.input(text)
+    for path_str, member in algorithms:
+        path_algorithm = Path(path_str)
 
-    tokens_detectados = []
-    while True:
-        tok = lexer.token()
-        if not tok: 
-            break
-        tokens_detectados.append(tok)
+        if not path_algorithm.exists():
+            print(f"Error: File not found {path_algorithm}")
+            continue
 
-    logger.save_tokens(tokens_detectados)
+        logger = LexerLogger(member_name=member)
+
+        with open(path_algorithm, "r", encoding="utf-8") as file:
+            text = file.read()
+
+        lexer.input(text)
+
+        tokens_detectados = []
+        while True:
+            tok = lexer.token()
+            if not tok:
+                break
+            tokens_detectados.append(tok)
+
+        logger.save_tokens(tokens_detectados)
+        print(f"Log generado: {logger.file_path}")
 
 if __name__ == "__main__":
     run_analyzer()
