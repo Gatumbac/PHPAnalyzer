@@ -1,5 +1,5 @@
 import ply.yacc as yacc
-from lexer import PhpLexer
+from src.lexer import PhpLexer
 
 class PhpParser:
     
@@ -7,6 +7,7 @@ class PhpParser:
         self.lexer = PhpLexer()
         self.tokens = self.lexer.tokens
         self.parser = yacc.yacc(module=self)
+        self.errores = []
 
     # =========================================================================
     # REGLAS ESTRUCTURALES (Para soportar múltiples líneas y bloques)
@@ -103,12 +104,19 @@ class PhpParser:
                       | expression GT term
                       | expression LT term
                       | expression EQ term
+                      | expression GE term
+                      | expression LE term
+                      | expression NEQ term
+                      | expression AND term
+                      | expression OR term
+                      | NOT expression
                       | term'''
         pass
 
     def p_term(self, p):
         '''term : term TIMES factor
                 | term DIVIDE factor
+                | term MODULO factor
                 | factor'''
         pass
 
@@ -143,21 +151,13 @@ class PhpParser:
 
     def p_error(self, p):
         if p:
-            print(f"Error de sintaxis 'Hubo un error, papus' en el token '{p.value}' (Línea {p.lineno})")
+            error_msg = f"Error de sintaxis: Problemas con el token '{p.value}' (Línea {p.lineno})"
         else:
-            print("Error de sintaxis: Fin de archivo inesperado (EOF).")
+            error_msg = "Error de sintaxis: Fin de archivo inesperado (EOF)."
+        print(error_msg)
+        self.errores.append(error_msg)
 
     def parse(self, text):
-        return self.parser.parse(text, lexer=self.lexer.lexer)
-
-if __name__ == '__main__':
-    php_parser = PhpParser()
-    while True:
-        try:
-            s = input('php-parser > ')
-        except EOFError:
-            break
-        if not s: 
-            continue
-        result = php_parser.parse(s)
-        print("Resultado del análisis:", result)
+        self.errores = []
+        self.parser.parse(text, lexer=self.lexer.lexer)
+        return self.errores

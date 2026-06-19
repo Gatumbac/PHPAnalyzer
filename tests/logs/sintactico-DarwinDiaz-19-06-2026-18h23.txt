@@ -1,0 +1,5 @@
+Error de sintaxis: Problemas con el token 'if' (Línea 39)
+Error de sintaxis: Problemas con el token '}' (Línea 41)
+Error de sintaxis: Problemas con el token '}' (Línea 43)
+Error de sintaxis: Problemas con el token '}' (Línea 51)
+Error de sintaxis: Problemas con el token '?>' (Línea 58)
