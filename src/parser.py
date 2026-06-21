@@ -1,6 +1,19 @@
 import ply.yacc as yacc
 from src.lexer import PhpLexer
 
+# =========================================================================
+# APORTE DE GABRIEL TUMBACO: PRECEDENCIA (4.2.2)
+# =========================================================================
+
+precedence = (
+    ('left', 'OR', 'AND'),
+    ('nonassoc', 'GT', 'LT', 'EQ', 'GE', 'LE', 'NEQ'),
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'TIMES', 'DIVIDE', 'MODULO'),
+    ('right', 'NOT'),
+    ('right', 'UMINUS'),
+)
+
 class PhpParser:
 
     def __init__(self):
@@ -10,7 +23,7 @@ class PhpParser:
         self.errors = []
 
     # =========================================================================
-    # REGLAS ESTRUCTURALES (Para soportar múltiples líneas y bloques)
+    # REGLAS ESTRUCTURALES (Base del Programa)
     # =========================================================================
 
     def p_program(self, p):
@@ -36,6 +49,10 @@ class PhpParser:
 
     def p_block(self, p):
         '''block : LBRACE statement_list RBRACE'''
+        pass
+
+    def p_empty(self, p):
+        '''empty :'''
         pass
 
     # =========================================================================
@@ -137,53 +154,38 @@ class PhpParser:
 
     # =========================================================================
     # EXPRESIONES MATEMÁTICAS, LÓGICAS Y PRIMITIVOS
-    # Ya resuelven operaciones simples y con agrupación
-    # Precedencia mediante jerarquía de operaciones
+    # Aporte de Darwin Díaz y Gabriel Tumbaco
     # Sección 4.2.2 y 4.2.3 del plan de implementación
     # =========================================================================
 
     def p_expression(self, p):
-        '''expression : expression AND relational_expr
-                      | expression OR relational_expr
-                      | NOT relational_expr
-                      | relational_expr'''
-        pass
-
-    def p_relational_expr(self, p):
-        '''relational_expr : relational_expr GT arithmetic_expr
-                            | relational_expr LT arithmetic_expr
-                            | relational_expr EQ arithmetic_expr
-                            | relational_expr GE arithmetic_expr
-                            | relational_expr LE arithmetic_expr
-                            | relational_expr NEQ arithmetic_expr
-                            | arithmetic_expr'''
-
-    def p_arithmetic_expr(self, p):
-        '''arithmetic_expr : arithmetic_expr PLUS term
-                            | arithmetic_expr MINUS term
-                            | term'''
-        pass
-
-    def p_term(self, p):
-        '''term : term TIMES factor
-                | term DIVIDE factor
-                | term MODULO factor
-                | factor'''
+        '''expression : expression AND expression
+                    | expression OR expression
+                    | expression PLUS expression
+                    | expression MINUS expression
+                    | expression TIMES expression
+                    | expression DIVIDE expression
+                    | expression MODULO expression
+                    | MINUS expression %prec UMINUS
+                    | expression GT expression
+                    | expression LT expression
+                    | expression EQ expression
+                    | expression GE expression
+                    | expression LE expression
+                    | expression NEQ expression
+                    | NOT expression
+                    | factor'''
         pass
 
     def p_factor(self, p):
         '''factor : INTEGER
-                  | FLOAT
-                  | STRING
-                  | TRUE
-                  | FALSE
-                  | VARIABLE
-                  | call_function
-                  | LPAREN expression RPAREN'''
-        pass
-
-    def p_empty(self, p):
-        '''empty :'''
+                | FLOAT
+                | STRING
+                | TRUE
+                | FALSE
+                | VARIABLE
+                | call_function
+                | LPAREN expression RPAREN'''
         pass
 
     # =========================================================================
