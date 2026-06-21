@@ -153,7 +153,7 @@ class PhpParser:
 
     def p_array_declaration(self, p):
         '''array_declaration : LBRACKET element_list RBRACKET
-                            | LBRACKER assoc_element_list RBRACKET
+                            | LBRACKET assoc_element_list RBRACKET
                             | LBRACKET RBRACKET'''
         pass
 
