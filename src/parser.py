@@ -115,6 +115,7 @@ class PhpParser:
                 | FALSE
                 | VARIABLE
                 | call_function
+                | http_request
                 | LPAREN expression RPAREN'''
         pass
 
@@ -205,8 +206,13 @@ class PhpParser:
     # APORTE DE GABRIEL TUMBACO: LLAMADA A FUNCIONES
     # =========================================================================
 
+    def p_function_identifier(self, p):
+        '''function_identifier : ID
+                                | READLINE'''
+        pass
+
     def p_call_function(self, p):
-        '''call_function : ID LPAREN argument_list RPAREN'''
+        '''call_function : function_identifier LPAREN argument_list RPAREN'''
         pass
 
     def p_call_function_statement(self, p):
@@ -220,6 +226,10 @@ class PhpParser:
         pass
 
     # =========================================================================
+    # IMPRESION Y SOLICITUD DE DATOS (4.2.7)
+    # =========================================================================
+
+    # =========================================================================
     # APORTE DE DARWIN DÍAZ: IMPRESIÓN (ECHO)
     # =========================================================================
 
@@ -227,6 +237,15 @@ class PhpParser:
         '''echo_statement : ECHO expression SEMICOLON'''
         pass
 
+    # =========================================================================
+    # APORTE DE GABRIEL TUMBACO: SOLICITUD DE DATOS (PETICION HTTP)
+    # PHP soporta la función readline que lee datos desde la consola
+    # El soporte para esta función se dió en la sección de Funciones
+    # =========================================================================
+
+    def p_http_request(self, p):
+        '''http_request : POST LBRACKET STRING RBRACKET'''
+        pass
 
     # =========================================================================
     # MANEJO DE ERRORES SINTÁCTICOS
