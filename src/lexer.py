@@ -110,12 +110,12 @@ class PhpLexer:
         return t
 
     def t_FLOAT(self, t):
-        r'-?\d+\.\d+'
+        r'\d+\.\d+'
         t.value = float(t.value)
         return t
 
     def t_INTEGER(self, t):
-        r'-?\d+'
+        r'\d+'
         t.value = int(t.value)
         return t
 
