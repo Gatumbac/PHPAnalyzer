@@ -39,7 +39,7 @@ class PhpParser:
         pass
 
     # =========================================================================
-    # APORTE DE DARWIN DÍAZ: ASIGNACIÓN SIMPLE
+    # APORTE DE DARWIN DÍAZ: ASIGNACIÓN SIMPLE (4.2.1)
     # =========================================================================
 
     def p_simple_declaration(self, p):
@@ -49,7 +49,7 @@ class PhpParser:
         pass
 
     # =========================================================================
-    # APORTE DE GABRIEL TUMBACO: ASIGNACIÓN COMPUESTA
+    # APORTE DE GABRIEL TUMBACO: ASIGNACIÓN COMPUESTA (4.2.1)
     # =========================================================================
 
     def p_compound_declaration(self, p):
@@ -117,6 +117,16 @@ class PhpParser:
         '''return_statement : RETURN expression SEMICOLON'''
         pass
 
+    def p_call_function(self, p):
+        '''call_function : ID LPAREN argument_list RPAREN'''
+        pass
+
+    def p_argument_list(self, p):
+        '''argument_list : argument_list COMMA expression
+                         | expression
+                         | empty'''
+        pass
+
     # =========================================================================
     # APORTE DE DARWIN DÍAZ: IMPRESIÓN (ECHO)
     # =========================================================================
@@ -127,22 +137,34 @@ class PhpParser:
 
     # =========================================================================
     # EXPRESIONES MATEMÁTICAS, LÓGICAS Y PRIMITIVOS
+    # Ya resuelven operaciones simples y con agrupación
+    # Precedencia mediante jerarquía de operaciones
+    # Sección 4.2.2 y 4.2.3 del plan de implementación
     # =========================================================================
 
     def p_expression(self, p):
         '''expression : expression PLUS term
                       | expression MINUS term
-                      | expression GT term
-                      | expression LT term
-                      | expression EQ term
-                      | expression GE term
-                      | expression LE term
-                      | expression NEQ term
-                      | expression AND term
-                      | expression OR term
-                      | NOT expression
-                      | term'''
+                      | expression AND relational_expr
+                      | expression OR relational_expr
+                      | NOT relational_expr
+                      | relational_expr'''
         pass
+
+    def p_relational_expr(self, p):
+        '''relational_expr : relational_expr GT arithmetic_expr
+                            | relational_expr LT arithmetic_expr
+                            | relational_expr EQ arithmetic_expr
+                            | relational_expr GE arithmetic_expr
+                            | relational_expr LE arithmetic_expr
+                            | relational_expr NEQ arithmetic_expr
+                            | arithmetic_expr'''
+
+    def p_arithmetic_expr(self, p):
+            '''arithmetic_expr : arithmetic_expr PLUS term
+                                | arithmetic_expr MINUS term
+                                | term'''
+            pass
 
     def p_term(self, p):
         '''term : term TIMES factor
@@ -160,16 +182,6 @@ class PhpParser:
                   | VARIABLE
                   | call_function
                   | LPAREN expression RPAREN'''
-        pass
-
-    def p_call_function(self, p):
-        '''call_function : ID LPAREN argument_list RPAREN'''
-        pass
-
-    def p_argument_list(self, p):
-        '''argument_list : argument_list COMMA expression
-                         | expression
-                         | empty'''
         pass
 
     def p_empty(self, p):
