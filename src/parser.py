@@ -56,7 +56,11 @@ class PhpParser:
         pass
 
     # =========================================================================
-    # APORTE DE DARWIN DÍAZ: ASIGNACIÓN SIMPLE (4.2.1)
+    # DECLARACIÓN DE VARIABLES (4.2.1)
+    # =========================================================================
+
+    # =========================================================================
+    # APORTE DE DARWIN DÍAZ: ASIGNACIÓN SIMPLE
     # =========================================================================
 
     def p_simple_declaration(self, p):
@@ -66,7 +70,7 @@ class PhpParser:
         pass
 
     # =========================================================================
-    # APORTE DE GABRIEL TUMBACO: ASIGNACIÓN COMPUESTA (4.2.1)
+    # APORTE DE GABRIEL TUMBACO: ASIGNACIÓN COMPUESTA
     # =========================================================================
 
     def p_compound_declaration(self, p):
@@ -75,7 +79,44 @@ class PhpParser:
         pass
 
     # =========================================================================
-    # APORTE DE DARWIN DÍAZ: ASIGNACIÓN DE ARREGLOS INDEXADOS
+    # EXPRESIONES MATEMÁTICAS, LÓGICAS Y PRIMITIVOS (4.2 Y 4.3)
+    # Aporte de Darwin Díaz y Gabriel Tumbaco
+    # Operaciones básicas, operaciones con agrupaciones y precedencia
+    # Precedencia se resuelve mediante la tupla "precedence"
+    # =========================================================================
+
+    def p_expression(self, p):
+        '''expression : expression AND expression
+                    | expression OR expression
+                    | expression PLUS expression
+                    | expression MINUS expression
+                    | expression TIMES expression
+                    | expression DIVIDE expression
+                    | expression MODULO expression
+                    | MINUS expression %prec UMINUS
+                    | expression GT expression
+                    | expression LT expression
+                    | expression EQ expression
+                    | expression GE expression
+                    | expression LE expression
+                    | expression NEQ expression
+                    | NOT expression
+                    | factor'''
+        pass
+
+    def p_factor(self, p):
+        '''factor : INTEGER
+                | FLOAT
+                | STRING
+                | TRUE
+                | FALSE
+                | VARIABLE
+                | call_function
+                | LPAREN expression RPAREN'''
+        pass
+
+    # =========================================================================
+    # APORTE DE DARWIN DÍAZ: ASIGNACIÓN DE ARREGLOS INDEXADOS (4.2.5)
     # =========================================================================
 
     def p_array_declaration(self, p):
@@ -89,7 +130,7 @@ class PhpParser:
         pass
 
     # =========================================================================
-    # APORTE DE GABRIEL TUMBACO: ASIGNACIÓN DE ARREGLOS ASOCIATIVOS
+    # APORTE DE GABRIEL TUMBACO: ASIGNACIÓN DE ARREGLOS ASOCIATIVOS (4.2.5)
     # =========================================================================
 
     def p_assoc_array_declaration(self, p):
@@ -152,42 +193,6 @@ class PhpParser:
         '''echo_statement : ECHO expression SEMICOLON'''
         pass
 
-    # =========================================================================
-    # EXPRESIONES MATEMÁTICAS, LÓGICAS Y PRIMITIVOS
-    # Aporte de Darwin Díaz y Gabriel Tumbaco
-    # Precedencia se resuelve mediante la variable "precedence" al inicio del archivo
-    # Sección 4.2.2 y 4.2.3 del plan de implementación
-    # =========================================================================
-
-    def p_expression(self, p):
-        '''expression : expression AND expression
-                    | expression OR expression
-                    | expression PLUS expression
-                    | expression MINUS expression
-                    | expression TIMES expression
-                    | expression DIVIDE expression
-                    | expression MODULO expression
-                    | MINUS expression %prec UMINUS
-                    | expression GT expression
-                    | expression LT expression
-                    | expression EQ expression
-                    | expression GE expression
-                    | expression LE expression
-                    | expression NEQ expression
-                    | NOT expression
-                    | factor'''
-        pass
-
-    def p_factor(self, p):
-        '''factor : INTEGER
-                | FLOAT
-                | STRING
-                | TRUE
-                | FALSE
-                | VARIABLE
-                | call_function
-                | LPAREN expression RPAREN'''
-        pass
 
     # =========================================================================
     # MANEJO DE ERRORES SINTÁCTICOS
