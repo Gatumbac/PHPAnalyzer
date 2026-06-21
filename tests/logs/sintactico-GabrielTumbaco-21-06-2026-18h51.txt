@@ -1,0 +1,5 @@
+Error de sintaxis: Problemas con el token ';' (Línea 67)
+Error de sintaxis: Problemas con el token ';' (Línea 71)
+Error de sintaxis: Problemas con el token '}' (Línea 77)
+Error de sintaxis: Problemas con el token '}' (Línea 79)
+Error de sintaxis: Problemas con el token '}' (Línea 85)

@@ -57,4 +57,31 @@ if ($usuario_cli == "admin" && $token_web == "XYZ123") {
 echo "Log de accesos registrados:";
 echo $contador_accesos;
 
+// =========================================================================
+// ALGORITMO DE PRUEBA: DETECCIÓN DE ERRORES SINTÁCTICOS (GABRIEL TUMBACO)
+// =========================================================================
+
+# Error 1: Asignación compuesta mal estructurada (Sección 4.2.1)
+# El operador compuesta debe ir junto y antes del valor, aquí falta la expresión derecha limpia.
+$contador = 10;
+$contador += ;
+
+# Error 2: Arreglo asociativo con delimitador incorrecto (Sección 4.2.5)
+# Se usó un punto y coma en lugar de una coma para separar los elementos del arreglo.
+$config = ["modo" => "test" ; "version" => 2026];
+
+# Error 3: Estructura condicional If-Else sin paréntesis en la condición (Sección 4.2.4)
+# En PHP, la expresión del 'if' debe estar obligatoriamente entre paréntesis.
+if $contador > 5 {
+    echo "Es mayor";
+} else {
+    echo "Es menor";
+}
+
+# Error 4: Intento de sobreescribir la función nativa protegida (Sección 4.2.6)
+# Como 'readline' es una palabra reservada (READLINE), esto debería fallar sintácticamente.
+function readline($mensaje) {
+    return "intento de hackeo";
+}
+
 ?>
