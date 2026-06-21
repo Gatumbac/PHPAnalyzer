@@ -42,9 +42,11 @@ class PhpParser:
                     | compound_declaration
                     | while_statement
                     | break_statement
+                    | if_statement
                     | echo_statement
                     | function_statement
-                    | return_statement'''
+                    | return_statement
+                    | call_function_statement'''
         pass
 
     def p_block(self, p):
@@ -79,10 +81,10 @@ class PhpParser:
         pass
 
     # =========================================================================
-    # EXPRESIONES MATEMÁTICAS, LÓGICAS Y PRIMITIVOS (4.2 y 4.3)
+    # EXPRESIONES MATEMÁTICAS, LÓGICAS Y PRIMITIVOS (4.2.2 y 4.2.3)
     # Aporte de Darwin Díaz y Gabriel Tumbaco
-    # 4.2 -> Operaciones básicas, operaciones con agrupaciones y precedencia
-    # 4.3 -> Operadores relacionales y operadores lógicos (Combinación de condiciones)
+    # 4.2.2 -> Operaciones básicas, operaciones con agrupaciones y precedencia
+    # 4.3.3 -> Operadores relacionales y operadores lógicos (Combinación de condiciones)
     # Precedencia se resuelve mediante la tupla "precedence"
     # =========================================================================
 
@@ -117,6 +119,35 @@ class PhpParser:
         pass
 
     # =========================================================================
+    # ESTRUCTURAS DE CONTROL (4.2.4)
+    # =========================================================================
+
+    # =========================================================================
+    # APORTE DE DARWIN DÍAZ: BUCLE WHILE Y BREAK
+    # =========================================================================
+
+    def p_while_statement(self, p):
+        '''while_statement : WHILE LPAREN expression RPAREN block'''
+        pass
+
+    def p_break_statement(self, p):
+        '''break_statement : BREAK SEMICOLON'''
+        pass
+
+    # =========================================================================
+    # APORTE DE GABRIEL TUMBACO: CONDICIONAL IF - ELSE
+    # =========================================================================
+
+    def p_if_statement(self, p):
+        '''if_statement : IF LPAREN expression RPAREN block
+                        | IF LPAREN expression RPAREN block ELSE block'''
+        pass
+
+    # =========================================================================
+    # ESTRUCTURAS DE DATOS (4.2.5)
+    # =========================================================================
+
+    # =========================================================================
     # APORTE DE DARWIN DÍAZ: ASIGNACIÓN DE ARREGLOS INDEXADOS (4.2.5)
     # =========================================================================
 
@@ -142,24 +173,18 @@ class PhpParser:
         '''assoc_element_list : assoc_element_list COMMA assoc_element
                                 | assoc_element
                                 | empty'''
+        pass
 
     def p_assoc_element(self, p):
         '''assoc_element : STRING ARROW expression'''
-
-    # =========================================================================
-    # APORTE DE DARWIN DÍAZ: BUCLE WHILE Y BREAK
-    # =========================================================================
-
-    def p_while_statement(self, p):
-        '''while_statement : WHILE LPAREN expression RPAREN block'''
-        pass
-
-    def p_break_statement(self, p):
-        '''break_statement : BREAK SEMICOLON'''
         pass
 
     # =========================================================================
-    # APORTE DE DARWIN DÍAZ: FUNCIONES CON RETORNO Y EXPRESIONES DE LLAMADA
+    # FUNCIONES (4.2.6)
+    # =========================================================================
+
+    # =========================================================================
+    # APORTE DE DARWIN DÍAZ: FUNCIONES CON RETORNO
     # =========================================================================
 
     def p_function_statement(self, p):
@@ -176,8 +201,16 @@ class PhpParser:
         '''return_statement : RETURN expression SEMICOLON'''
         pass
 
+    # =========================================================================
+    # APORTE DE GABRIEL TUMBACO: LLAMADA A FUNCIONES
+    # =========================================================================
+
     def p_call_function(self, p):
         '''call_function : ID LPAREN argument_list RPAREN'''
+        pass
+
+    def p_call_function_statement(self, p):
+        '''call_function_statement : ID LPAREN argument_list RPAREN SEMICOLON'''
         pass
 
     def p_argument_list(self, p):
