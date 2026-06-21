@@ -1,10 +1,14 @@
 # PHPAnalyzer
 
-Analizador léxico para código PHP desarrollado en Python usando [PLY (Python Lex-Yacc)](https://www.dabeaz.com/ply/).
+Analizador léxico y sintáctico para código PHP desarrollado en Python usando [PLY (Python Lex-Yacc)](https://www.dabeaz.com/ply/).
 
 ## Descripción
 
-PHPAnalyzer tokeniza archivos PHP e identifica los siguientes elementos léxicos:
+PHPAnalyzer tokeniza y analiza sintácticamente archivos PHP. El análisis se realiza en dos fases:
+
+### 1. Análisis Léxico (PhpLexer)
+
+Identifica los siguientes elementos léxicos:
 
 | Token | Descripción | Ejemplo |
 |-------|-------------|---------|
@@ -12,17 +16,10 @@ PHPAnalyzer tokeniza archivos PHP e identifica los siguientes elementos léxicos
 | `INTEGER` | Números enteros | `25`, `-5` |
 | `FLOAT` | Números de punto flotante | `19.99`, `-120.45` |
 | `STRING` | Cadenas de texto | `'texto'`, `"texto"` |
-| `TRUE` | Booleano verdadero | `true` |
-| `FALSE` | Booleano falso | `false` |
+| `TRUE` / `FALSE` | Booleanos | `true`, `false` |
 | `COMMENT` | Comentarios | `// ...`, `# ...`, `/* ... */` |
 | `ID` | Identificadores | `sumar`, `calcular` |
-| `IF` | Palabra reservada | `if` |
-| `ELSE` | Palabra reservada | `else` |
-| `WHILE` | Palabra reservada | `while` |
-| `BREAK` | Palabra reservada | `break` |
-| `FUNCTION` | Palabra reservada | `function` |
-| `RETURN` | Palabra reservada | `return` |
-| `ECHO` | Palabra reservada | `echo` |
+| `IF`, `ELSE`, `WHILE`, `BREAK`, `FUNCTION`, `RETURN`, `ECHO` | Palabras reservadas | `if`, `while`, `function` |
 | `PLUS`, `MINUS`, `TIMES`, `DIVIDE`, `MODULO` | Operadores aritméticos | `+`, `-`, `*`, `/`, `%` |
 | `EQ`, `NEQ`, `LT`, `GT`, `LE`, `GE` | Operadores relacionales | `==`, `!=`, `<`, `>`, `<=`, `>=` |
 | `AND`, `OR`, `NOT` | Operadores lógicos | `&&`, `\|\|`, `!` |
@@ -30,24 +27,43 @@ PHPAnalyzer tokeniza archivos PHP e identifica los siguientes elementos léxicos
 | `SEMICOLON`, `LBRACE`, `RBRACE`, `LPAREN`, `RPAREN` | Delimitadores | `;`, `{`, `}`, `(`, `)` |
 | `LBRACKET`, `RBRACKET`, `COMMA`, `COLON`, `ARROW` | Delimitadores | `[`, `]`, `,`, `:`, `=>` |
 | `PHP_OPEN`, `PHP_CLOSE` | Etiquetas PHP | `<?php`, `?>` |
+| `POST`, `READLINE` | Captura de datos | `$_POST`, `readline` |
 
-Los resultados se guardan en archivos de log dentro de `tests/logs/`.
+### 2. Análisis Sintáctico (PhpParser)
+
+Valida la estructura del código PHP según reglas gramaticales definidas:
+
+| Regla | Descripción |
+|-------|-------------|
+| Declaraciones simples | Asignación de variables (`$x = expr;`) y arreglos |
+| Declaraciones compuestas | Asignación con operadores `+=` y `-=` |
+| Expresiones | Operaciones aritméticas, lógicas y relacionales con precedencia |
+| Estructuras de control | `if`/`else`, `while`, `break` |
+| Arreglos indexados y asociativos | `[1, 2, 3]`, `["key" => value]` |
+| Funciones | Definición (`function foo(...) { }`), retorno y llamadas |
+| Captura de datos | `readline(...)`, `$_POST["key"]` |
+| Impresión | `echo expr;` |
+
+Los resultados se guardan como archivos de log en `tests/logs/`, tanto del análisis léxico como sintáctico.
 
 ## Estructura del proyecto
 
 ```
 PHPAnalyzer/
-├── main.py              # Punto de entrada
+├── main.py                  # Punto de entrada
 ├── src/
 │   ├── __init__.py
-│   ├── lexer.py         # Definición del analizador léxico (PhpLexer)
+│   ├── lexer.py             # Analizador léxico (PhpLexer)
+│   ├── parser.py            # Analizador sintáctico (PhpParser)
 │   └── utils/
 │       ├── __init__.py
-│       └── logger.py    # Logger de tokens (LexerLogger)
+│       └── logger.py        # Logger (PhpLogger)
 ├── tests/
-│   ├── algorithm_darwin.php   # Archivo PHP de prueba (Darwin Díaz)
-│   ├── algorithm_gabriel.php  # Archivo PHP de prueba (Gabriel Tumbaco)
-│   └── logs/                  # Salida de los análisis
+│   ├── algorithm_darwin.php     # Archivo PHP de prueba (Darwin Díaz)
+│   ├── algorithm_gabriel.php    # Archivo PHP de prueba (Gabriel Tumbaco)
+│   └── logs/                    # Salida de los análisis
+│       ├── lexico-*.txt
+│       └── sintactico-*.txt
 ├── requirements.txt
 └── README.md
 ```
@@ -93,9 +109,20 @@ pip install -r requirements.txt
 python main.py
 ```
 
-Esto analiza los archivos `tests/algorithm_darwin.php` y `tests/algorithm_gabriel.php`, generando un log por cada integrante en `tests/logs/`.
+Esto ejecuta el análisis sintáctico sobre los archivos PHP en `tests/`, generando logs en `tests/logs/` con los errores de estructura encontrados. Si el código es válido, se registra un mensaje de éxito.
+
+Para usar únicamente el analizador léxico de forma interactiva:
+
+```python
+from src.lexer import PhpLexer
+
+lexer = PhpLexer()
+lexer.input("<?php $x = 10 + 5; ?>")
+for tok in lexer.lexer:
+    print(tok)
+```
 
 ## Integrantes
 
-- Darwin Díaz — Variables, datos primitivos y comentarios
-- Gabriel Tumbaco — Operadores, palabras reservadas y delimitadores
+- Darwin Díaz — Variables, datos primitivos, comentarios, `while`/`break`, arreglos indexados, funciones con retorno, `echo`
+- Gabriel Tumbaco — Operadores, palabras reservadas, delimitadores, `if`/`else`, arreglos asociativos, llamadas a funciones, captura de datos (`readline`/`$_POST`), manejo de errores sintácticos
