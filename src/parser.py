@@ -143,9 +143,7 @@ class PhpParser:
     # =========================================================================
 
     def p_expression(self, p):
-        '''expression : expression PLUS term
-                      | expression MINUS term
-                      | expression AND relational_expr
+        '''expression : expression AND relational_expr
                       | expression OR relational_expr
                       | NOT relational_expr
                       | relational_expr'''
@@ -161,10 +159,10 @@ class PhpParser:
                             | arithmetic_expr'''
 
     def p_arithmetic_expr(self, p):
-            '''arithmetic_expr : arithmetic_expr PLUS term
-                                | arithmetic_expr MINUS term
-                                | term'''
-            pass
+        '''arithmetic_expr : arithmetic_expr PLUS term
+                            | arithmetic_expr MINUS term
+                            | term'''
+        pass
 
     def p_term(self, p):
         '''term : term TIMES factor
