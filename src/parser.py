@@ -79,9 +79,10 @@ class PhpParser:
         pass
 
     # =========================================================================
-    # EXPRESIONES MATEMÁTICAS, LÓGICAS Y PRIMITIVOS (4.2 Y 4.3)
+    # EXPRESIONES MATEMÁTICAS, LÓGICAS Y PRIMITIVOS (4.2 y 4.3)
     # Aporte de Darwin Díaz y Gabriel Tumbaco
-    # Operaciones básicas, operaciones con agrupaciones y precedencia
+    # 4.2 -> Operaciones básicas, operaciones con agrupaciones y precedencia
+    # 4.3 -> Operadores relacionales y operadores lógicos (Combinación de condiciones)
     # Precedencia se resuelve mediante la tupla "precedence"
     # =========================================================================
 
