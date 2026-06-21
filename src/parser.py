@@ -2,17 +2,17 @@ import ply.yacc as yacc
 from src.lexer import PhpLexer
 
 class PhpParser:
-    
+
     def __init__(self):
         self.lexer = PhpLexer()
         self.tokens = self.lexer.tokens
         self.parser = yacc.yacc(module=self)
-        self.errores = []
+        self.errors = []
 
     # =========================================================================
     # REGLAS ESTRUCTURALES (Para soportar múltiples líneas y bloques)
     # =========================================================================
-    
+
     def p_program(self, p):
         '''program : PHP_OPEN statement_list PHP_CLOSE
                    | statement_list'''
@@ -155,9 +155,9 @@ class PhpParser:
         else:
             error_msg = "Error de sintaxis: Fin de archivo inesperado (EOF)."
         print(error_msg)
-        self.errores.append(error_msg)
+        self.errors.append(error_msg)
 
     def parse(self, text):
-        self.errores = []
+        self.errors = []
         self.parser.parse(text, lexer=self.lexer.lexer)
-        return self.errores
+        return self.errors
