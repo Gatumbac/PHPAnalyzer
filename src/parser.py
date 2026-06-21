@@ -155,6 +155,7 @@ class PhpParser:
     # =========================================================================
     # EXPRESIONES MATEMÁTICAS, LÓGICAS Y PRIMITIVOS
     # Aporte de Darwin Díaz y Gabriel Tumbaco
+    # Precedencia se resuelve mediante la variable "precedence" al inicio del archivo
     # Sección 4.2.2 y 4.2.3 del plan de implementación
     # =========================================================================
 
