@@ -127,8 +127,7 @@ class PhpLexer:
     def t_COMMENT(self, t):
         r'//[^\n]*|\#[^\n]*|/\*[\s\S]*?\*/'
         t.lexer.lineno += t.value.count('\n')
-        t.value = str(t.value)
-        return t
+        pass
 
     # =========================================================================
     # APORTE DE GABRIEL TUMBACO (Identificadores y Palabras Reservadas)

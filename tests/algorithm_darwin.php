@@ -1,52 +1,58 @@
 <?php
-// ==========================================
+// =========================================================================
 // ALGORITMO DE PRUEBA - DARWIN DÍAZ
-// ==========================================
+// =========================================================================
 
-/* Este archivo contiene diferentes tipos de variables,
-   tipos de datos primitivos (enteros, flotantes, strings, booleanos)
-   y variaciones de comentarios para estresar el analizador léxico.
+/* Este archivo contiene operadores aritméticos, relacionales, lógicos,
+   palabras reservadas, delimitadores y estructuras de control
+   para estresar el analizador léxico.
 */
 
-# 1. Pruebas de Comentarios
-// Este es un comentario de una sola línea (estilo C++)
-# Este es otro comentario de una sola línea (estilo Shell/Perl)
+# 1. Inicialización de Variables y Estructuras de Datos
 
-/*
-   Este es un comentario multilínea
-   diseñado para verificar que el lexer ignore correctamente
-   los saltos de línea y el texto dentro de los delimitadores.
-*/
+$nombre_curso = "Programacion de Compiladores 2026";
+$calificaciones = [8.5, 9.2, 6.4, 4.5, 7.0];
+$limite_aprobacion = 7.0;
+$total_estudiantes = 5;
 
-# 2. Pruebas de Tipos de Datos Primitivos y Variables
+# 2. Solicitud de datos por teclado
 
-// Variables con números enteros (Integer)
-$edad_usuario = 25;
-$id_registro = 100456;
-$temperatura_minima = -5; // Entero negativo
+$registro_activo = readline();
 
-// Variables con números de punto flotante (Float)
-$precio_producto = 19.99;
-$pi_aproximado = 3.14159;
-$puntaje_promedio = 0.5;
-$saldo_negativo = -120.45; // Flotante negativo
+# 3. Definición de Función con Retorno y Parámetros
 
-// Variables con Cadenas de Texto (String)
-$nombre_simple = 'Darwin Diaz';
-$saludo_complejo = "Bienvenido al sistema de pruebas léxicas del compilador.";
-$string_vacio = "";
-$string_con_numeros = "ID-999_Usuario";
+function evaluar_estado($nota, $minimo) {
+    // Expresión aritmética con múltiples operadores
+    $porcentaje_score = ($nota * 10) / 1; 
+    return $porcentaje_score;
+}
 
-// Variables con Valores Booleanos (Boolean)
-$estado_activo = true;
-$procesar_datos = false;
-$es_valido = TRUE;  // Variante en mayúsculas
-$tiene_permiso = FALSE; // Variante en mayúsculas
+# 4. Estructura de Control Compleja
 
-# 3. Bloque mixto para evaluar la correcta separación de tokens en secuencia
-$resultado_final = $precio_producto;
-$mensaje_log = "El proceso ha terminado de forma exitosa.";
-$finalizado = true;
+$indice = 0;
+while ($indice < $total_estudiantes) {
+    
+    $nota_actual = $calificaciones; // Simulación de acceso/asignación simple
+    $score = evaluar_estado($nota_actual, $limite_aprobacion);
 
-// Fin del archivo de prueba
+    // Condición con operadores relacionales y conectores lógicos compuestos
+    if (($nota_actual >= $limite_aprobacion) && ($registro_activa == true)) {
+        echo "Estudiante aprobado con excelente puntaje.";
+    } else {
+        echo "Estudiante requiere examen de recuperacion.";
+    }
+
+    // Condición de control para salida forzada con Break
+    if ($nota_actual == 0.0) {
+        break; 
+    }
+
+    $indice = $indice + 1;
+}
+
+# 5. Impresión de Cierre de Bloque
+
+echo "Procesamiento de actas finalizado para el curso:";
+echo $nombre_curso;
+
 ?>
