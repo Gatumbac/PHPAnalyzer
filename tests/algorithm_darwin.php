@@ -5,7 +5,7 @@
 
 /* Este archivo contiene operadores aritméticos, relacionales, lógicos,
    palabras reservadas, delimitadores y estructuras de control
-   para estresar el analizador léxico.
+   para estresar a los analizadores léxico y sintáctico.
 */
 
 # 1. Inicialización de Variables y Estructuras de Datos
@@ -23,7 +23,7 @@ $registro_activo = readline();
 
 function evaluar_estado($nota, $minimo) {
     // Expresión aritmética con múltiples operadores
-    $porcentaje_score = ($nota * 10) / 1; 
+    $porcentaje_score = ($nota * 10) / 1;
     return $porcentaje_score;
 }
 
@@ -31,7 +31,7 @@ function evaluar_estado($nota, $minimo) {
 
 $indice = 0;
 while ($indice < $total_estudiantes) {
-    
+
     $nota_actual = $calificaciones; // Simulación de acceso/asignación simple
     $score = evaluar_estado($nota_actual, $limite_aprobacion);
 
@@ -44,7 +44,7 @@ while ($indice < $total_estudiantes) {
 
     // Condición de control para salida forzada con Break
     if ($nota_actual == 0.0) {
-        break; 
+        break;
     }
 
     $indice = $indice + 1;

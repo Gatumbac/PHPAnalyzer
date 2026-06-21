@@ -5,16 +5,16 @@ from src.lexer import PhpLexer
 # APORTE DE GABRIEL TUMBACO: PRECEDENCIA (4.2.2)
 # =========================================================================
 
-precedence = (
-    ('left', 'OR', 'AND'),
-    ('nonassoc', 'GT', 'LT', 'EQ', 'GE', 'LE', 'NEQ'),
-    ('left', 'PLUS', 'MINUS'),
-    ('left', 'TIMES', 'DIVIDE', 'MODULO'),
-    ('right', 'NOT'),
-    ('right', 'UMINUS'),
-)
-
 class PhpParser:
+
+    precedence = (
+        ('left', 'OR', 'AND'),
+        ('nonassoc', 'GT', 'LT', 'EQ', 'GE', 'LE', 'NEQ'),
+        ('left', 'PLUS', 'MINUS'),
+        ('left', 'TIMES', 'DIVIDE', 'MODULO'),
+        ('right', 'NOT'),
+        ('right', 'UMINUS'),
+    )
 
     def __init__(self):
         self.lexer = PhpLexer()
@@ -67,8 +67,7 @@ class PhpParser:
 
     def p_simple_declaration(self, p):
         '''simple_declaration : VARIABLE ASSIGN expression SEMICOLON
-                              | VARIABLE ASSIGN array_declaration SEMICOLON
-                              | VARIABLE ASSIGN assoc_array_declaration SEMICOLON'''
+                              | VARIABLE ASSIGN array_declaration SEMICOLON'''
         pass
 
     # =========================================================================
@@ -153,27 +152,23 @@ class PhpParser:
     # =========================================================================
 
     def p_array_declaration(self, p):
-        '''array_declaration : LBRACKET element_list RBRACKET'''
+        '''array_declaration : LBRACKET element_list RBRACKET
+                            | LBRACKER assoc_element_list RBRACKET
+                            | LBRACKET RBRACKET'''
         pass
 
     def p_element_list(self, p):
         '''element_list : element_list COMMA expression
-                        | expression
-                        | empty'''
+                        | expression'''
         pass
 
     # =========================================================================
     # APORTE DE GABRIEL TUMBACO: ASIGNACIÓN DE ARREGLOS ASOCIATIVOS (4.2.5)
     # =========================================================================
 
-    def p_assoc_array_declaration(self, p):
-        '''assoc_array_declaration : LBRACKET assoc_element_list RBRACKET'''
-        pass
-
     def p_assoc_element_list(self, p):
         '''assoc_element_list : assoc_element_list COMMA assoc_element
-                                | assoc_element
-                                | empty'''
+                                | assoc_element'''
         pass
 
     def p_assoc_element(self, p):
