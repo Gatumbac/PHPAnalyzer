@@ -15,22 +15,23 @@ class PhpParser:
 
     def p_program(self, p):
         '''program : PHP_OPEN statement_list PHP_CLOSE
-                   | statement_list'''
+                    | statement_list'''
         pass
 
     def p_statement_list(self, p):
         '''statement_list : statement_list statement
-                          | statement
-                          | empty'''
+                        | statement
+                        | empty'''
         pass
 
     def p_statement(self, p):
         '''statement : simple_declaration
-                     | while_statement
-                     | break_statement
-                     | echo_statement
-                     | function_statement
-                     | return_statement'''
+                    | compound_declaration
+                    | while_statement
+                    | break_statement
+                    | echo_statement
+                    | function_statement
+                    | return_statement'''
         pass
 
     def p_block(self, p):
@@ -38,13 +39,27 @@ class PhpParser:
         pass
 
     # =========================================================================
-    # APORTE DE DARWIN DÍAZ: ASIGNACIÓN SIMPLE Y ARREGLOS INDEXADOS
+    # APORTE DE DARWIN DÍAZ: ASIGNACIÓN SIMPLE
     # =========================================================================
 
     def p_simple_declaration(self, p):
         '''simple_declaration : VARIABLE ASSIGN expression SEMICOLON
-                              | VARIABLE ASSIGN array_declaration SEMICOLON'''
+                              | VARIABLE ASSIGN array_declaration SEMICOLON
+                              | VARIABLE ASSIGN assoc_array_declaration SEMICOLON'''
         pass
+
+    # =========================================================================
+    # APORTE DE GABRIEL TUMBACO: ASIGNACIÓN COMPUESTA
+    # =========================================================================
+
+    def p_compound_declaration(self, p):
+        '''compound_declaration : VARIABLE PLUS_ASSIGN expression SEMICOLON
+                                | VARIABLE MINUS_ASSIGN expression SEMICOLON'''
+        pass
+
+    # =========================================================================
+    # APORTE DE DARWIN DÍAZ: ASIGNACIÓN DE ARREGLOS INDEXADOS
+    # =========================================================================
 
     def p_array_declaration(self, p):
         '''array_declaration : LBRACKET element_list RBRACKET'''
@@ -55,6 +70,22 @@ class PhpParser:
                         | expression
                         | empty'''
         pass
+
+    # =========================================================================
+    # APORTE DE GABRIEL TUMBACO: ASIGNACIÓN DE ARREGLOS ASOCIATIVOS
+    # =========================================================================
+
+    def p_assoc_array_declaration(self, p):
+        '''assoc_array_declaration : LBRACKET assoc_element_list RBRACKET'''
+        pass
+
+    def p_assoc_element_list(self, p):
+        '''assoc_element_list : assoc_element_list COMMA assoc_element
+                                | assoc_element
+                                | empty'''
+
+    def p_assoc_element(self, p):
+        '''assoc_element : STRING ARROW expression'''
 
     # =========================================================================
     # APORTE DE DARWIN DÍAZ: BUCLE WHILE Y BREAK
