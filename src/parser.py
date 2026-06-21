@@ -210,7 +210,7 @@ class PhpParser:
         pass
 
     def p_call_function_statement(self, p):
-        '''call_function_statement : ID LPAREN argument_list RPAREN SEMICOLON'''
+        '''call_function_statement : call_function SEMICOLON'''
         pass
 
     def p_argument_list(self, p):
