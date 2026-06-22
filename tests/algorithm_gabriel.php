@@ -5,77 +5,83 @@
 
 /* Este archivo contiene operadores aritméticos, relacionales, lógicos,
    palabras reservadas, delimitadores y estructuras de control
-   para estresar el analizador léxico.
+   para estresar a los analizadores léxico y sintáctico.
 */
 
-# 1. Pruebas de Operadores Aritméticos
+# 1. Configuración Inicial y Arreglos Asociativos (Sección 4.2.5)
+$sistema = [
+    "ambiente" => "produccion",
+    "version" => 2026,
+    "intentos_maximos" => 3
+];
 
-$a = 10;
-$b = 3;
-$suma = $a + $b;
-$resta = $a - $b;
-$producto = $a * $b;
-$division = $a / $b;
-$modulo = $a % $b;
+$contador_accesos = 0;
+$puntos_usuario = 10;
 
-# 2. Pruebas de Operadores de Asignación Compuesta
+# 2. Captura de Datos por Consola (CLI)
+echo "Iniciando sesion administrativa...";
+$usuario_cli = readline("Ingrese el identificador del administrador: ");
 
-$contador = 0;
-$contador += 5;
-$contador -= 2;
+# 3. Captura de Datos Web (Superglobal $_POST)
+$token_web = $_POST["token_seguridad"];
+$accion_web = $_POST["accion"];
 
-# 3. Pruebas de Operadores Relacionales
+# 4. Operadores de Asignación Compuesta (Sección 4.2.1)
+$contador_accesos += 1;
+$puntos_usuario -= 2;
 
-$mayor = $a > $b;
-$menor = $a < $b;
-$mayor_igual = $a >= $b;
-$menor_igual = $a <= $b;
-$igualdad = $a == $b;
-$diferencia = $a != $b;
+# 5. Estructura de Control Condicional Anidada (Sección 4.2.4)
+if ($usuario_cli == "admin" && $token_web == "XYZ123") {
 
-# 4. Pruebas de Estructuras de Control y Operadores Lógicos
+    echo "Acceso CLI verificado.";
 
-if ($a > $b && $a != 0) {
-    echo "A es mayor y distinto de cero";
-}
+    // Condicional If-Else secundario dentro del bloque
+    if ($accion_web == "actualizar" || $accion_web == "guardar") {
 
-if ($a < $b || $b == 0) {
-    echo "Condicion OR cumplida";
-} else {
-    echo "Condicion OR no cumplida";
-}
+        // Llamada a función como instrucción independiente (Sección 4.2.6)
+        ejecutar_respaldo($usuario_cli);
 
-$activo = true;
-if (!$activo) {
-    echo "No activo";
-}
+        $contador_accesos += 5;
+        echo "Operacion web procesada con exito.";
 
-# 5. Pruebas de Bucle While con Break
-
-$i = 0;
-while ($i < 10) {
-    if ($i == 5) {
-        break;
+    } else {
+        echo "Accion web no reconocida o denegada.";
     }
-    $i += 1;
+
+} else {
+    echo "Fallo de autenticacion en el sistema.";
+    $contador_accesos += 1;
 }
 
-# 6. Pruebas de Funciones
+# 6. Verificación de Cierre
+echo "Log de accesos registrados:";
+echo $contador_accesos;
 
-function sumar($x, $y) {
-    return $x + $y;
+// =========================================================================
+// ALGORITMO DE PRUEBA: DETECCIÓN DE ERRORES SINTÁCTICOS (GABRIEL TUMBACO)
+// =========================================================================
+
+# Error 1: Asignación compuesta mal estructurada (Sección 4.2.1)
+# El operador compuesta debe ir junto y antes del valor, aquí falta la expresión derecha limpia.
+$contador = 10;
+$contador += ;
+
+# Error 2: Arreglo asociativo con delimitador incorrecto (Sección 4.2.5)
+# Se usó un punto y coma en lugar de una coma para separar los elementos del arreglo.
+$config = ["modo" => "test" ; "version" => 2026];
+
+# Error 3: Estructura condicional If-Else sin paréntesis en la condición (Sección 4.2.4)
+# En PHP, la expresión del 'if' debe estar obligatoriamente entre paréntesis.
+if $contador > 5 {
+    echo "Es mayor";
+} else {
+    echo "Es menor";
 }
 
-$resultado = sumar(4, 6);
-echo $resultado;
-
-# 7. Pruebas de Arreglos y Delimitadores
-
-$numeros = [1, 2, 3, 4, 5];
-$persona = ["nombre" => "Gabriel", "edad" => 22];
-
-# 8. Prueba de Expresiones con Agrupación
-
-$promedio = ($a + $b) / 2;
+# Error 4: Intento de sobreescribir la función nativa protegida (Sección 4.2.6)
+# Como 'readline' es una palabra reservada (READLINE), esto debería fallar sintácticamente.
+function readline($mensaje) {
+    return "intento de hackeo";
+}
 
 ?>

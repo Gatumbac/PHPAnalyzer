@@ -1,4 +1,3 @@
-from src.lexer import PhpLexer
 from src.parser import PhpParser
 from src.utils.logger import PhpLogger
 from pathlib import Path
@@ -6,8 +5,8 @@ from pathlib import Path
 def run_analyzer():
 
     algorithms = [
-        ("tests/algorithm_darwin.php", "DarwinDiaz"),
-        #("tests/algorithm_gabriel.php", "GabrielTumbaco"),
+        #("tests/algorithm_darwin.php", "DarwinDiaz"),
+        ("tests/algorithm_gabriel.php", "GabrielTumbaco"),
     ]
 
     parser = PhpParser()
@@ -27,12 +26,12 @@ def run_analyzer():
 
         parser.lexer.input(text)
 
-        errores_detectados = parser.parse(text)
-        
-        if not errores_detectados:
-            errores_detectados = ["Análisis sintáctico exitoso. Código sin errores de estructura."]
+        detected_errors = parser.parse(text)
 
-        logger.save_logs(errores_detectados)
+        if not detected_errors:
+            detected_errors = ["Análisis sintáctico exitoso. Código sin errores de estructura."]
+
+        logger.save_logs(detected_errors)
         print(f"Log generado con éxito: {logger.file_path}")
 
 if __name__ == "__main__":

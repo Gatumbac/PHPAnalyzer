@@ -12,6 +12,9 @@ class PhpLexer:
         'echo': 'ECHO',
         'true': 'TRUE',
         'false': 'FALSE',
+        # Recibir datos del usuario
+        '$_POST': 'POST',
+        "readline": "READLINE",
     }
 
     tokens = [
@@ -106,16 +109,17 @@ class PhpLexer:
 
     def t_VARIABLE(self, t):
         r'\$[a-zA-Z_][a-zA-Z0-9_]*'
+        t.type = self.reserved.get(t.value, 'VARIABLE')
         t.value = str(t.value)
         return t
 
     def t_FLOAT(self, t):
-        r'-?\d+\.\d+'
+        r'\d+\.\d+'
         t.value = float(t.value)
         return t
 
     def t_INTEGER(self, t):
-        r'-?\d+'
+        r'\d+'
         t.value = int(t.value)
         return t
 
