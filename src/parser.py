@@ -31,25 +31,25 @@ class PhpParser:
 
     def p_program(self, p):
         '''program : PHP_OPEN statement_list PHP_CLOSE
-                    | statement_list'''
+                   | statement_list'''
         pass
 
     def p_statement_list(self, p):
         '''statement_list : statement_list statement
-                        | statement
-                        | empty'''
+                          | statement
+                          | empty'''
         pass
 
     def p_statement(self, p):
         '''statement : simple_declaration
-                    | compound_declaration
-                    | while_statement
-                    | break_statement
-                    | if_statement
-                    | echo_statement
-                    | function_statement
-                    | return_statement
-                    | call_function_statement'''
+                     | compound_declaration
+                     | while_statement
+                     | break_statement
+                     | if_statement
+                     | echo_statement
+                     | function_statement
+                     | return_statement
+                     | call_function_statement'''
         pass
 
     def p_block(self, p):
@@ -100,33 +100,33 @@ class PhpParser:
 
     def p_expression(self, p):
         '''expression : expression AND expression
-                    | expression OR expression
-                    | expression PLUS expression
-                    | expression MINUS expression
-                    | expression TIMES expression
-                    | expression DIVIDE expression
-                    | expression MODULO expression
-                    | MINUS expression %prec UMINUS
-                    | expression GT expression
-                    | expression LT expression
-                    | expression EQ expression
-                    | expression GE expression
-                    | expression LE expression
-                    | expression NEQ expression
-                    | NOT expression
-                    | factor'''
+                      | expression OR expression
+                      | expression PLUS expression
+                      | expression MINUS expression
+                      | expression TIMES expression
+                      | expression DIVIDE expression
+                      | expression MODULO expression
+                      | MINUS expression %prec UMINUS
+                      | expression GT expression
+                      | expression LT expression
+                      | expression EQ expression
+                      | expression GE expression
+                      | expression LE expression
+                      | expression NEQ expression
+                      | NOT expression
+                      | factor'''
         pass
 
     def p_factor(self, p):
         '''factor : INTEGER
-                | FLOAT
-                | STRING
-                | TRUE
-                | FALSE
-                | factor_variable
-                | call_function
-                | http_request
-                | LPAREN expression RPAREN'''
+                  | FLOAT
+                  | STRING
+                  | TRUE
+                  | FALSE
+                  | factor_variable
+                  | call_function
+                  | http_request
+                  | LPAREN expression RPAREN'''
         pass
     
     def p_factor_variable(self, p):
@@ -168,8 +168,8 @@ class PhpParser:
 
     def p_array_declaration(self, p):
         '''array_declaration : LBRACKET element_list RBRACKET
-                            | LBRACKET assoc_element_list RBRACKET
-                            | LBRACKET RBRACKET'''
+                             | LBRACKET assoc_element_list RBRACKET
+                             | LBRACKET RBRACKET'''
         pass
 
     def p_element_list(self, p):
@@ -183,7 +183,7 @@ class PhpParser:
 
     def p_assoc_element_list(self, p):
         '''assoc_element_list : assoc_element_list COMMA assoc_element
-                                | assoc_element'''
+                              | assoc_element'''
         pass
 
     def p_assoc_element(self, p):
@@ -218,7 +218,7 @@ class PhpParser:
 
     def p_function_identifier(self, p):
         '''function_identifier : ID
-                                | READLINE'''
+                               | READLINE'''
         pass
 
     def p_call_function(self, p):
