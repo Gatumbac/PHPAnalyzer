@@ -1,5 +1,6 @@
 import ply.yacc as yacc
 from src.lexer import PhpLexer
+from src.semantic import SemanticAnalyzer
 
 # =========================================================================
 # APORTE DE GABRIEL TUMBACO: PRECEDENCIA (4.2.2)
@@ -19,8 +20,10 @@ class PhpParser:
     def __init__(self):
         self.lexer = PhpLexer()
         self.tokens = self.lexer.tokens
+        self.sintactic_errors = []
+        self.semantic_errors = []
+        self.semantic = SemanticAnalyzer(self.semantic_errors)
         self.parser = yacc.yacc(module=self)
-        self.errors = []
 
     # =========================================================================
     # REGLAS ESTRUCTURALES (Base del Programa)
@@ -56,6 +59,14 @@ class PhpParser:
     def p_empty(self, p):
         '''empty :'''
         pass
+    
+    def p_enter_loop(self, p):
+        '''enter_loop :'''
+        self.semantic.enter_loop()
+    
+    def p_exit_loop(self, p):
+        '''exit_loop :'''
+        self.semantic.exit_loop()
 
     # =========================================================================
     # DECLARACIÓN DE VARIABLES (4.2.1)
@@ -68,7 +79,7 @@ class PhpParser:
     def p_simple_declaration(self, p):
         '''simple_declaration : VARIABLE ASSIGN expression SEMICOLON
                               | VARIABLE ASSIGN array_declaration SEMICOLON'''
-        pass
+        self.semantic.declare_variable(p[1], p.lineno(1))
 
     # =========================================================================
     # APORTE DE GABRIEL TUMBACO: ASIGNACIÓN COMPUESTA
@@ -112,11 +123,15 @@ class PhpParser:
                 | STRING
                 | TRUE
                 | FALSE
-                | VARIABLE
+                | factor_variable
                 | call_function
                 | http_request
                 | LPAREN expression RPAREN'''
         pass
+    
+    def p_factor_variable(self, p):
+        '''factor_variable : VARIABLE'''
+        self.semantic.check_variable_usage(p[1], p.lineno(1))
 
     # =========================================================================
     # ESTRUCTURAS DE CONTROL (4.2.4)
@@ -127,12 +142,12 @@ class PhpParser:
     # =========================================================================
 
     def p_while_statement(self, p):
-        '''while_statement : WHILE LPAREN expression RPAREN block'''
+        '''while_statement : WHILE LPAREN expression RPAREN enter_loop block exit_loop'''
         pass
 
     def p_break_statement(self, p):
         '''break_statement : BREAK SEMICOLON'''
-        pass
+        self.semantic.check_break_context(p.lineno(1))
 
     # =========================================================================
     # APORTE DE GABRIEL TUMBACO: CONDICIONAL IF - ELSE
@@ -252,9 +267,10 @@ class PhpParser:
         else:
             error_msg = "Error de sintaxis: Fin de archivo inesperado (EOF)."
         print(error_msg)
-        self.errors.append(error_msg)
+        self.sintactic_errors.append(error_msg)
 
     def parse(self, text):
-        self.errors = []
+        self.sintactic_errors.clear()
+        self.semantic_errors.clear()
         self.parser.parse(text, lexer=self.lexer.lexer)
-        return self.errors
+        return self.sintactic_errors, self.semantic_errors
