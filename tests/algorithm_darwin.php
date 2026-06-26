@@ -36,7 +36,7 @@ while ($indice < $total_estudiantes) {
     $score = evaluar_estado($nota_actual, $limite_aprobacion);
 
     // Condición con operadores relacionales y conectores lógicos compuestos
-    if (($nota_actual >= $limite_aprobacion) && ($registro_activa == true)) {
+    if (($nota_actual >= $limite_aprobacion) && ($registro_activo == true)) {
         echo "Estudiante aprobado con excelente puntaje.";
     } else {
         echo "Estudiante requiere examen de recuperacion.";
