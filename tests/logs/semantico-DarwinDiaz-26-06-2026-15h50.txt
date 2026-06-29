@@ -1,0 +1,1 @@
+Error Semántico en línea 26: La variable '$nota' no ha sido inicializada.
