@@ -79,7 +79,7 @@ class PhpParser:
     def p_simple_declaration(self, p):
         '''simple_declaration : VARIABLE ASSIGN expression SEMICOLON
                               | VARIABLE ASSIGN array_declaration SEMICOLON'''
-        self.semantic.declare_variable(p[1], p.lineno(1))
+        self.semantic.declare_variable(p[1], p.lineno(1), p[3])
 
     # =========================================================================
     # APORTE DE GABRIEL TUMBACO: ASIGNACIÓN COMPUESTA
@@ -88,7 +88,12 @@ class PhpParser:
     def p_compound_declaration(self, p):
         '''compound_declaration : VARIABLE PLUS_ASSIGN expression SEMICOLON
                                 | VARIABLE MINUS_ASSIGN expression SEMICOLON'''
-        pass
+        # =====================================================================
+        # APORTE DE GABRIEL TUMBACO: VERIFICACIÓN DE TIPOS EN ASIGNACIÓN COMPUESTA
+        # =====================================================================
+        self.semantic.check_variable_usage(p[1], p.lineno(1))
+        self.semantic.check_arithmetic_types(
+            self.semantic.get_variable_type(p[1]), p[3], p[2], p.lineno(2))
 
     # =========================================================================
     # EXPRESIONES MATEMÁTICAS, LÓGICAS Y PRIMITIVOS (4.2.2 y 4.2.3)
@@ -115,7 +120,25 @@ class PhpParser:
                       | expression NEQ expression
                       | NOT expression
                       | factor'''
-        pass
+        if len(p) == 2:
+            p[0] = p[1]
+        elif len(p) == 3:
+            p[0] = p[2]
+        else:
+            op = p[2]
+            if op in ('+', '-', '*', '/', '%'):
+                # =========================================================
+                # APORTE DE GABRIEL TUMBACO: VERIFICACIÓN DE TIPOS (5.2)
+                # =========================================================
+                self.semantic.check_arithmetic_types(p[1], p[3], op, p.lineno(2))
+                if p[1] == 'float' or p[3] == 'float':
+                    p[0] = 'float'
+                elif p[1] == 'integer' and p[3] == 'integer':
+                    p[0] = 'integer'
+                else:
+                    p[0] = p[1]
+            else:
+                p[0] = 'boolean'
 
     def p_factor(self, p):
         '''factor : INTEGER
@@ -127,11 +150,22 @@ class PhpParser:
                   | call_function
                   | http_request
                   | LPAREN expression RPAREN'''
-        pass
+        if len(p) == 4:
+            p[0] = p[2]
+        else:
+            type_map = {
+                'INTEGER': 'integer',
+                'FLOAT': 'float',
+                'STRING': 'string',
+                'TRUE': 'boolean',
+                'FALSE': 'boolean',
+            }
+            p[0] = type_map.get(p.slice[1].type, p[1])
     
     def p_factor_variable(self, p):
         '''factor_variable : VARIABLE'''
         self.semantic.check_variable_usage(p[1], p.lineno(1))
+        p[0] = self.semantic.get_variable_type(p[1])
 
     # =========================================================================
     # ESTRUCTURAS DE CONTROL (4.2.4)
@@ -170,7 +204,7 @@ class PhpParser:
         '''array_declaration : LBRACKET element_list RBRACKET
                              | LBRACKET assoc_element_list RBRACKET
                              | LBRACKET RBRACKET'''
-        pass
+        p[0] = 'array'
 
     def p_element_list(self, p):
         '''element_list : element_list COMMA expression
@@ -200,13 +234,19 @@ class PhpParser:
 
     def p_function_statement(self, p):
         '''function_statement : FUNCTION ID LPAREN parameter_list RPAREN block'''
-        pass
+        # =====================================================================
+        # APORTE DE GABRIEL TUMBACO: REDECLARACIÓN DE FUNCIONES (5.2)
+        # =====================================================================
+        self.semantic.declare_function(p[2], p.lineno(2))
 
     def p_parameter_list(self, p):
         '''parameter_list : parameter_list COMMA VARIABLE
                           | VARIABLE
                           | empty'''
-        pass
+        if len(p) == 4:
+            self.semantic.declare_variable(p[3], p.lineno(3))
+        elif len(p) == 2 and p[1] is not None:
+            self.semantic.declare_variable(p[1], p.lineno(1))
 
     def p_return_statement(self, p):
         '''return_statement : RETURN expression SEMICOLON'''
@@ -255,7 +295,7 @@ class PhpParser:
 
     def p_http_request(self, p):
         '''http_request : POST LBRACKET STRING RBRACKET'''
-        pass
+        p[0] = 'string'
 
     # =========================================================================
     # MANEJO DE ERRORES SINTÁCTICOS

@@ -25,7 +25,7 @@ def run_analyzer():
         parser.lexer.input(text)
 
         sintactic_errors, semantic_errors = parser.parse(text)
-        
+
         sintactic_logger = PhpLogger(member_name=member, analysis_type="sintactico")
 
         if not sintactic_errors:
@@ -38,7 +38,7 @@ def run_analyzer():
             print(f"Fase semántica omitida para {member} debido a errores sintácticos previos.")
 
         semantic_logger = PhpLogger(member_name=member, analysis_type="semantico")
-        
+
         if not semantic_errors:
             semantic_errors = ["Análisis semántico exitoso. Variables y contextos correctos."]
         semantic_logger.save_logs(semantic_errors)
