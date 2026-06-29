@@ -57,6 +57,24 @@ if ($usuario_cli == "admin" && $token_web == "XYZ123") {
 echo "Log de accesos registrados:";
 echo $contador_accesos;
 
+# =========================================================================
+# SECCIÓN DE ERRORES SEMÁNTICOS (GABRIEL TUMBACO)
+# =========================================================================
+
+# Error Semántico 1: Tipos incompatibles para operación aritmética (5.2)
+$texto_prueba = "error";
+$numero_prueba = 42;
+$resultado_invalido = $texto_prueba * $numero_prueba;
+
+# Error Semántico 2: Redeclaración de función (5.2)
+function validar_datos($entrada) {
+    echo $entrada;
+}
+function validar_datos($salida) {
+    echo $salida;
+}
+
+/*
 // =========================================================================
 // ALGORITMO DE PRUEBA: DETECCIÓN DE ERRORES SINTÁCTICOS (GABRIEL TUMBACO)
 // =========================================================================
@@ -83,5 +101,5 @@ if $contador > 5 {
 function readline($mensaje) {
     return "intento de hackeo";
 }
-
+*/
 ?>
