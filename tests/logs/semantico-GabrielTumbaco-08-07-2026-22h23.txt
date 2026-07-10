@@ -1,0 +1,2 @@
+Error Semantico en linea 67: Tipos incompatibles para la operacion "*".
+Error Semantico en linea 73: La funcion 'validar_datos' ya ha sido declarada previamente.

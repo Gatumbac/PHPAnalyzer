@@ -1,0 +1,62 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --bg: #f5f7f9;
+  --panel: #ffffff;
+  --panel-alt: #f3f4f6;
+  --border: #d4d7dd;
+  --text: #111827;
+  --muted: #6b7280;
+  --accent: #0f766e;
+  --ok: #166534;
+  --warn: #a16207;
+  --error: #b91c1c;
+  --bg-radial-a: rgba(15, 118, 110, 0.08);
+  --bg-radial-b: rgba(161, 98, 7, 0.08);
+  --bg-grad-top: #f8fafc;
+  --bg-grad-bottom: #eef2f7;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b1220;
+  --panel: #111827;
+  --panel-alt: #1f2937;
+  --border: #374151;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --accent: #2dd4bf;
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --error: #f87171;
+  --bg-radial-a: rgba(45, 212, 191, 0.12);
+  --bg-radial-b: rgba(251, 191, 36, 0.1);
+  --bg-grad-top: #0b1220;
+  --bg-grad-bottom: #030712;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  background-color: var(--bg);
+  background:
+    radial-gradient(circle at 10% 10%, var(--bg-radial-a), transparent 40%),
+    radial-gradient(circle at 90% 20%, var(--bg-radial-b), transparent 45%),
+    linear-gradient(180deg, var(--bg-grad-top) 0%, var(--bg-grad-bottom) 100%);
+  color: var(--text);
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+#root {
+  min-height: 100vh;
+}

@@ -1,4 +1,4 @@
-from src.parser import PhpParser
+from packages.analyzer import analyze_php
 from src.utils.logger import PhpLogger
 from pathlib import Path
 
@@ -8,8 +8,6 @@ def run_analyzer():
         ("tests/algorithm_darwin.php", "DarwinDiaz"),
         ("tests/algorithm_gabriel.php", "GabrielTumbaco"),
     ]
-
-    parser = PhpParser()
 
     for path_str, member in algorithms:
 
@@ -22,9 +20,9 @@ def run_analyzer():
         with open(path_algorithm, "r", encoding="utf-8") as file:
             text = file.read()
 
-        parser.lexer.input(text)
-
-        sintactic_errors, semantic_errors = parser.parse(text)
+        result = analyze_php(text, include_tokens=True)
+        sintactic_errors = [error.message for error in result.syntactic_errors]
+        semantic_errors = [error.message for error in result.semantic_errors]
 
         sintactic_logger = PhpLogger(member_name=member, analysis_type="sintactico")
 
