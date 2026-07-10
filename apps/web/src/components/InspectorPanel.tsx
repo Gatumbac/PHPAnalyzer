@@ -63,8 +63,7 @@ export function InspectorPanel({ result, sectionsOpen, activeSection, onToggleSe
   const semanticErrors = result?.semantic_errors ?? [];
   const lexicalErrors = syntacticErrors.filter((error) => error.phase === "lexical");
 
-  const shouldShowTokens =
-    !!result && result.status === "success" && result.tokens.length > 0 && lexicalErrors.length === 0;
+  const shouldShowTokens = !!result && result.tokens.length > 0;
 
   return (
     <aside className="flex h-full flex-col gap-3 rounded-lg border border-border bg-panel p-3">
@@ -83,7 +82,7 @@ export function InspectorPanel({ result, sectionsOpen, activeSection, onToggleSe
         onToggle={onToggleSection}
       >
         {lexicalErrors.length > 0 ? <ErrorList errors={lexicalErrors} /> : null}
-        {shouldShowTokens ? <TokenTable tokens={result.tokens} /> : <p className="text-xs text-muted">La tabla de tokens aparece cuando no hay errores.</p>}
+        {shouldShowTokens ? <TokenTable tokens={result.tokens} /> : <p className="text-xs text-muted">No hay tokens para mostrar.</p>}
       </SectionCard>
 
       <SectionCard

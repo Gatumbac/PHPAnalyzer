@@ -54,7 +54,8 @@ class PhpParser:
                      | echo_statement
                      | function_statement
                      | return_statement
-                     | call_function_statement"""
+                     | call_function_statement
+                     | error SEMICOLON"""
         pass
 
     def p_block(self, p):
@@ -65,13 +66,9 @@ class PhpParser:
         """empty :"""
         pass
 
-    def p_enter_loop(self, p):
-        """enter_loop :"""
+    def p_while_header(self, p):
+        """while_header : WHILE LPAREN expression RPAREN"""
         self.semantic.enter_loop()
-
-    def p_exit_loop(self, p):
-        """exit_loop :"""
-        self.semantic.exit_loop()
 
     def p_simple_declaration(self, p):
         """simple_declaration : VARIABLE ASSIGN expression SEMICOLON
@@ -148,8 +145,8 @@ class PhpParser:
         p[0] = self.semantic.get_variable_type(p[1])
 
     def p_while_statement(self, p):
-        """while_statement : WHILE LPAREN expression RPAREN enter_loop block exit_loop"""
-        pass
+        """while_statement : while_header block"""
+        self.semantic.exit_loop()
 
     def p_break_statement(self, p):
         """break_statement : BREAK SEMICOLON"""

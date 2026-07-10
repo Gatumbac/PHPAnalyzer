@@ -105,19 +105,20 @@ export const useUIStore = create<UIState>((set) => ({
   setResult: (result) => set({ lastResult: result }),
   openSectionForStatus: (status) =>
     set((state) => {
+      const base = {
+        ...state.sectionsOpen,
+        lexico: true,
+      };
       if (status === "success") {
         return {
-          sectionsOpen: {
-            ...state.sectionsOpen,
-            lexico: true,
-          },
+          sectionsOpen: base,
           activeSection: "lexico",
         };
       }
       if (status === "syntax_error") {
         return {
           sectionsOpen: {
-            ...state.sectionsOpen,
+            ...base,
             sintactico: true,
           },
           activeSection: "sintactico",
@@ -126,7 +127,7 @@ export const useUIStore = create<UIState>((set) => ({
       if (status === "semantic_error") {
         return {
           sectionsOpen: {
-            ...state.sectionsOpen,
+            ...base,
             semantico: true,
           },
           activeSection: "semantico",
@@ -134,7 +135,7 @@ export const useUIStore = create<UIState>((set) => ({
       }
       return {
         sectionsOpen: {
-          ...state.sectionsOpen,
+          ...base,
           sintactico: true,
           semantico: true,
         },
