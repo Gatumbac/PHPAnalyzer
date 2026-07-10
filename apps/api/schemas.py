@@ -16,7 +16,7 @@ class AnalyzeRequest(BaseModel):
             raise ValueError("El campo 'source_code' no puede estar vacio.")
         if len(value) > settings.max_source_code_size:
             raise ValueError(
-                f"El campo 'source_code' supera el limite de {settings.max_source_code_size} caracteres."
+                f"El campo 'source_code' supera el límite de {settings.max_source_code_size} caracteres."
             )
         return value
 
@@ -46,6 +46,7 @@ class AnalyzeResponse(BaseModel):
     tokens: list[TokenInfoResponse]
     syntactic_errors: list[AnalysisErrorResponse]
     semantic_errors: list[AnalysisErrorResponse]
+    semantic_skipped: bool
     meta: AnalysisMetaResponse
 
 
