@@ -33,4 +33,5 @@ class AnalysisResult:
     tokens: list[TokenInfo] = field(default_factory=list)
     syntactic_errors: list[AnalysisError] = field(default_factory=list)
     semantic_errors: list[AnalysisError] = field(default_factory=list)
+    semantic_skipped: bool = False
     meta: AnalysisMeta = field(default_factory=lambda: AnalysisMeta(elapsed_ms=0, source_length=0))

@@ -33,6 +33,116 @@ class PhpParser:
         self.semantic_errors.clear()
         self.semantic = SemanticAnalyzer(self.semantic_errors)
         self.lexer.lexer.lineno = 1
+        self._targeted_error_positions: set[int] = set()
+        self._recovery_error_positions: set[int] = set()
+
+    def _add_targeted_error(self, token, code: str, message: str):
+        """Register a precise syntax error and remember its token position.
+
+        PLY's recovery reports the token where the parse finally fails, which is
+        often only a consequence of the real mistake (for example, ``if`` after
+        an assignment without a semicolon).  Keeping the position also lets
+        ``p_error`` avoid adding that less useful duplicate afterwards.
+        """
+        if token.lexpos in self._targeted_error_positions:
+            return
+
+        self._targeted_error_positions.add(token.lexpos)
+        self._recovery_error_positions.add(token.lexpos)
+        self.syntactic_errors.append(
+            AnalysisError(
+                phase="syntactic",
+                line=token.lineno,
+                code=code,
+                message=message,
+            )
+        )
+
+    def _detect_targeted_syntax_errors(self, text: str):
+        """Detect common malformed constructs before the grammar recovers.
+
+        This pass is deliberately small and token based: the main parser still
+        validates the language, while these checks retain the context that is
+        otherwise discarded during error recovery.
+        """
+        diagnostic_lexer = PhpLexer()
+        diagnostic_lexer.input(text)
+        tokens = []
+        while token := diagnostic_lexer.token():
+            tokens.append(token)
+
+        statement_starters = {"IF", "WHILE", "ECHO", "BREAK", "FUNCTION", "RETURN"}
+
+        for index, token in enumerate(tokens):
+            next_token = tokens[index + 1] if index + 1 < len(tokens) else None
+
+            if token.type == "IF" and next_token and next_token.type != "LPAREN":
+                self._add_targeted_error(
+                    token,
+                    "SYN_MISSING_IF_PARENTHESES",
+                    f"Error sintáctico en línea {token.lineno}: la condición de 'if' debe estar entre paréntesis.",
+                )
+                # The grammar fails at the first condition token, not at `if`.
+                self._recovery_error_positions.add(next_token.lexpos)
+
+            if (
+                token.type == "VARIABLE"
+                and next_token
+                and next_token.type in {"PLUS_ASSIGN", "MINUS_ASSIGN"}
+                and index + 2 < len(tokens)
+                and tokens[index + 2].type == "SEMICOLON"
+            ):
+                operator = next_token.value
+                semicolon = tokens[index + 2]
+                self._add_targeted_error(
+                    semicolon,
+                    "SYN_MISSING_COMPOUND_EXPRESSION",
+                    f"Error sintáctico en línea {semicolon.lineno}: falta la expresión a la derecha de '{operator}'.",
+                )
+
+            # An assignment must end before the following top-level statement.
+            if token.type == "VARIABLE" and next_token and next_token.type == "ASSIGN":
+                bracket_depth = 0
+                paren_depth = 0
+                for candidate in tokens[index + 2 :]:
+                    if candidate.type == "LBRACKET":
+                        bracket_depth += 1
+                    elif candidate.type == "RBRACKET":
+                        bracket_depth = max(0, bracket_depth - 1)
+                    elif candidate.type == "LPAREN":
+                        paren_depth += 1
+                    elif candidate.type == "RPAREN":
+                        paren_depth = max(0, paren_depth - 1)
+                    elif candidate.type == "SEMICOLON" and not bracket_depth and not paren_depth:
+                        break
+                    elif candidate.type in statement_starters and not bracket_depth and not paren_depth:
+                        self._add_targeted_error(
+                            token,
+                            "SYN_MISSING_SEMICOLON",
+                            f"Error sintáctico en línea {token.lineno}: falta el delimitador ';' al final de la instrucción antes de '{candidate.value}'.",
+                        )
+                        # PLY reports the following statement starter, which is
+                        # only the symptom of the missing delimiter.
+                        self._recovery_error_positions.add(candidate.lexpos)
+                        break
+
+            # A semicolon inside an array is never an element separator.  The
+            # grammar expects a comma there, but normal recovery may skip it.
+            if token.type == "LBRACKET":
+                depth = 1
+                for candidate in tokens[index + 1 :]:
+                    if candidate.type == "LBRACKET":
+                        depth += 1
+                    elif candidate.type == "RBRACKET":
+                        depth -= 1
+                        if depth == 0:
+                            break
+                    elif candidate.type == "SEMICOLON" and depth:
+                        self._add_targeted_error(
+                            candidate,
+                            "SYN_ARRAY_SEPARATOR",
+                            f"Error sintáctico en línea {candidate.lineno}: se esperaba ',' para separar los elementos del arreglo; se encontró ';'.",
+                        )
 
     def p_program(self, p):
         """program : PHP_OPEN statement_list PHP_CLOSE
@@ -223,12 +333,14 @@ class PhpParser:
 
     def p_error(self, p):
         if p:
+            if p.lexpos in self._recovery_error_positions:
+                return
             self.syntactic_errors.append(
                 AnalysisError(
                     phase="syntactic",
                     line=p.lineno,
                     code="SYN_UNEXPECTED_TOKEN",
-                    message=f"Error de sintaxis: Problemas con el token '{p.value}' (Linea {p.lineno})",
+                    message=f"Error sintáctico en línea {p.lineno}: token inesperado '{p.value}'.",
                 )
             )
         else:
@@ -237,11 +349,13 @@ class PhpParser:
                     phase="syntactic",
                     line=0,
                     code="SYN_UNEXPECTED_EOF",
-                    message="Error de sintaxis: Fin de archivo inesperado (EOF).",
+                    message="Error sintáctico: fin de archivo inesperado.",
                 )
             )
 
     def parse(self, text: str):
         self.reset_state()
+        self._detect_targeted_syntax_errors(text)
         self.parser.parse(text, lexer=self.lexer.lexer)
+        self.syntactic_errors.sort(key=lambda error: error.line)
         return self.syntactic_errors, self.semantic_errors

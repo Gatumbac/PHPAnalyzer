@@ -133,7 +133,7 @@ class PhpLexer:
 
     def t_error(self, t):
         t.type = "ERROR"
-        t.value = f"Illegal character '{t.value[0]}' in line {t.lexer.lineno}"
+        t.value = t.value[0]
         t.lexer.skip(1)
         return t
 
