@@ -63,7 +63,7 @@ export const useUIStore = create<UIState>((set) => ({
     sintactico: false,
     semantico: false,
   },
-  statusMessage: "Esperando codigo...",
+  statusMessage: "Esperando código...",
   healthMessage: "Verificando API...",
   lastResult: null,
   setSourceCode: (value) => set({ sourceCode: value }),

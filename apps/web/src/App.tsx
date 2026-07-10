@@ -11,15 +11,15 @@ import { useUIStore } from "./store/uiStore";
 
 function statusMessageFromResult(status: "success" | "syntax_error" | "semantic_error" | "mixed_error") {
   if (status === "success") {
-    return "Analisis completado sin errores.";
+    return "Análisis completado sin errores.";
   }
   if (status === "syntax_error") {
-    return "Se detectaron errores sintacticos.";
+    return "Se detectaron errores sintácticos.";
   }
   if (status === "semantic_error") {
-    return "Se detectaron errores semanticos.";
+    return "Se detectaron errores semánticos.";
   }
-  return "Se detectaron errores sintacticos y semanticos.";
+  return "Se detectaron errores sintácticos y semánticos.";
 }
 
 export default function App() {
@@ -27,7 +27,6 @@ export default function App() {
     sourceCode,
     includeTokens,
     themeMode,
-    activeSection,
     sectionsOpen,
     statusMessage,
     healthMessage,
@@ -56,7 +55,7 @@ export default function App() {
     mutationFn: analyzeCode,
     onMutate: () => {
       setRequestError("");
-      setStatusMessage("Procesando analisis...");
+      setStatusMessage("Procesando análisis...");
     },
     onSuccess: (result) => {
       setResult(result);
@@ -64,9 +63,9 @@ export default function App() {
       setStatusMessage(statusMessageFromResult(result.status));
     },
     onError: (error) => {
-      const message = error instanceof Error ? error.message : "Error inesperado durante el analisis.";
+      const message = error instanceof Error ? error.message : "Error inesperado durante el análisis.";
       setRequestError(message);
-      setStatusMessage("No se pudo completar el analisis.");
+      setStatusMessage("No se pudo completar el análisis.");
     },
   });
 
@@ -98,7 +97,7 @@ export default function App() {
 
   const handleExport = () => {
     try {
-      exportAnalysisLogs(lastResult);
+      exportAnalysisLogs(lastResult, includeTokens);
       setStatusMessage("Log exportado correctamente.");
     } catch (error) {
       const message = error instanceof Error ? error.message : "No se pudo exportar el log.";
@@ -118,12 +117,12 @@ export default function App() {
         onToggleTheme={toggleTheme}
       />
 
-      <section className="grid min-h-[65vh] grid-cols-1 gap-4 lg:grid-cols-[65%_35%]">
+      <section className="grid min-h-[65vh] grid-cols-1 gap-4 lg:grid-cols-[minmax(0,13fr)_minmax(0,7fr)]">
         <CodeEditor value={sourceCode} onChange={setSourceCode} themeMode={themeMode} />
         <InspectorPanel
           result={lastResult}
+          includeTokens={includeTokens}
           sectionsOpen={sectionsOpen}
-          activeSection={activeSection}
           onToggleSection={toggleSection}
         />
       </section>
