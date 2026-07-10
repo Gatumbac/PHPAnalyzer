@@ -1,1 +1,0 @@
-Análisis semántico exitoso. Variables y contextos correctos.

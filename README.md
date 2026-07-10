@@ -1,10 +1,10 @@
 # PHPAnalyzer
 
-Analizador léxico, sintáctico y semántico para código PHP desarrollado en Python usando [PLY (Python Lex-Yacc)](https://www.dabeaz.com/ply/).
+Analizador léxico y sintáctico para código PHP desarrollado en Python usando [PLY (Python Lex-Yacc)](https://www.dabeaz.com/ply/).
 
 ## Descripción
 
-PHPAnalyzer tokeniza y analiza archivos PHP en tres fases:
+PHPAnalyzer tokeniza y analiza sintácticamente archivos PHP. El análisis se realiza en dos fases:
 
 ### 1. Análisis Léxico (PhpLexer)
 
@@ -44,45 +44,26 @@ Valida la estructura del código PHP según reglas gramaticales definidas:
 | Captura de datos | `readline(...)`, `$_POST["key"]` |
 | Impresión | `echo expr;` |
 
-### 3. Análisis Semántico (SemanticAnalyzer)
-
-Valida coherencia lógica del código luego de pasar la fase sintáctica:
-
-| Regla | Descripción |
-|-------|-------------|
-| Variables inicializadas | Detecta uso de variables no declaradas/inicializadas |
-| Contexto de `break` | Reporta `break` fuera de bucles |
-| Tipos aritméticos | Valida operaciones `+`, `-`, `*`, `/`, `%` entre tipos numéricos |
-| Redeclaración de funciones | Detecta funciones definidas más de una vez |
-
-Los resultados se guardan como archivos de log en `tests/logs/` para análisis sintáctico y semántico.
+Los resultados se guardan como archivos de log en `tests/logs/`, tanto del análisis léxico como sintáctico.
 
 ## Estructura del proyecto
 
 ```
 PHPAnalyzer/
 ├── main.py                  # Punto de entrada
-├── apps/
-│   └── web/                 # Workspace reservado para frontend web (Vite)
-├── docs/
-│   └── specs/               # Especificaciones de arquitectura y comportamiento UI
-├── packages/
-│   └── analyzer/
-│       └── php_analyzer/    # Core reusable del analizador (sin IO de archivos)
 ├── src/
+│   ├── __init__.py
+│   ├── lexer.py             # Analizador léxico (PhpLexer)
+│   ├── parser.py            # Analizador sintáctico (PhpParser)
 │   └── utils/
 │       ├── __init__.py
-│       └── logger.py        # Logger de CLI
+│       └── logger.py        # Logger (PhpLogger)
 ├── tests/
 │   ├── algorithm_darwin.php     # Archivo PHP de prueba (Darwin Díaz)
 │   ├── algorithm_gabriel.php    # Archivo PHP de prueba (Gabriel Tumbaco)
-│   ├── unit/                     # Tests unitarios del core
 │   └── logs/                    # Salida de los análisis
 │       ├── lexico-*.txt
-│       ├── sintactico-*.txt
-│       └── semantico-*.txt
-├── pnpm-workspace.yaml
-├── package.json
+│       └── sintactico-*.txt
 ├── requirements.txt
 └── README.md
 ```
@@ -128,19 +109,17 @@ pip install -r requirements.txt
 python main.py
 ```
 
-Esto ejecuta el análisis sobre los archivos PHP en `tests/` y genera logs en `tests/logs/`:
+Esto ejecuta el análisis sintáctico sobre los archivos PHP en `tests/`, generando logs en `tests/logs/` con los errores de estructura encontrados. Si el código es válido, se registra un mensaje de éxito.
 
-- `sintactico-*.txt` con errores de estructura o mensaje de éxito.
-- `semantico-*.txt` con errores lógicos/contextuales o mensaje de éxito.
-
-Para usar el analizador reusable desde Python:
+Para usar únicamente el analizador léxico de forma interactiva:
 
 ```python
-from packages.analyzer import analyze_php
+from src.lexer import PhpLexer
 
-result = analyze_php("<?php $x = 10 + 5; ?>")
-print(result.status)
-print(result.tokens[0])
+lexer = PhpLexer()
+lexer.input("<?php $x = 10 + 5; ?>")
+for tok in lexer.lexer:
+    print(tok)
 ```
 
 ## Integrantes

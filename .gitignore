@@ -149,8 +149,6 @@ activemq-data/
 
 # Environments
 .env
-.env.*
-!.env.example
 .envrc
 .venv
 env/
@@ -222,13 +220,3 @@ __marimo__/
 # Personalizadas:
 parser.out
 parsetab.py
-
-# Agents
-
-.agents 
-.codex 
-.claude 
-
-# Node
-node_modules/
-apps/*/node_modules/
