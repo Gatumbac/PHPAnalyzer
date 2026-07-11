@@ -55,6 +55,7 @@ if ($edad >= 18 {
     assert response.status_code == 200
     assert body["status"] == "syntax_error"
     assert len(body["syntactic_errors"]) > 0
+    assert body["semantic_skipped"] is True
 
 
 def test_analyze_without_tokens_returns_empty_tokens():
@@ -71,13 +72,28 @@ def test_analyze_without_tokens_returns_empty_tokens():
     assert body["tokens"] == []
 
 
+def test_analyze_without_tokens_keeps_lexical_errors():
+    response = client.post(
+        "/analyze",
+        json={
+            "source_code": "<?php $x = @; ?>",
+            "include_tokens": False,
+        },
+    )
+    body = response.json()
+
+    assert response.status_code == 200
+    assert body["tokens"] == []
+    assert any(error["phase"] == "lexical" for error in body["syntactic_errors"])
+
+
 def test_analyze_oversized_payload_rejected():
     oversized = "a" * 262145
     response = client.post("/analyze", json={"source_code": oversized})
 
     assert response.status_code == 422
     detail = response.json()["detail"]
-    assert any("supera el limite" in item["msg"] for item in detail)
+    assert any("supera el límite" in item["msg"] for item in detail)
 
 
 def test_cors_preflight_allows_configured_origin():

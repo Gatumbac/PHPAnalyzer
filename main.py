@@ -1,4 +1,5 @@
 from packages.analyzer import analyze_php
+from packages.analyzer.php_analyzer.lexer import PhpLexer
 from src.utils.logger import PhpLogger
 from pathlib import Path
 
@@ -6,7 +7,7 @@ def run_analyzer():
 
     algorithms = [
         ("tests/algorithm_darwin.php", "DarwinDiaz"),
-        ("tests/algorithm_gabriel.php", "GabrielTumbaco"),
+        #("tests/algorithm_gabriel.php", "GabrielTumbaco"),
     ]
 
     for path_str, member in algorithms:
@@ -20,9 +21,26 @@ def run_analyzer():
         with open(path_algorithm, "r", encoding="utf-8") as file:
             text = file.read()
 
-        result = analyze_php(text, include_tokens=True)
+        result = analyze_php(text, include_tokens=False)
         sintactic_errors = [error.message for error in result.syntactic_errors]
         semantic_errors = [error.message for error in result.semantic_errors]
+
+        lexer = PhpLexer()
+        lexer.input(text)
+        lexical_logs = []
+        while True:
+            tok = lexer.token()
+            if tok is None:
+                break
+            lexical_logs.append(tok)
+        if not lexical_logs:
+            lexical_logs = ["No hay tokens para mostrar."]
+        else:
+            lexical_logs.append("Análisis léxico exitoso. Tokens generados correctamente.")
+
+        lexical_logger = PhpLogger(member_name=member, analysis_type="lexico")
+        lexical_logger.save_logs(lexical_logs)
+        print(f"Log léxico generado con éxito: {lexical_logger.file_path}")
 
         sintactic_logger = PhpLogger(member_name=member, analysis_type="sintactico")
 

@@ -45,7 +45,7 @@ def _collect_tokens(source_code: str) -> tuple[list[TokenInfo], list[AnalysisErr
                     phase="lexical",
                     line=tok.lineno,
                     code="LEX_ILLEGAL_CHARACTER",
-                    message=lexeme,
+                    message=f"Error léxico en línea {tok.lineno}: carácter ilegal '{lexeme}'.",
                 )
             )
 
@@ -65,16 +65,15 @@ def _derive_status(syntactic_errors: list[AnalysisError], semantic_errors: list[
 def analyze_php(source_code: str, include_tokens: bool = True) -> AnalysisResult:
     started = perf_counter()
 
-    lexical_tokens: list[TokenInfo] = []
-    lexical_errors: list[AnalysisError] = []
-    if include_tokens:
-        lexical_tokens, lexical_errors = _collect_tokens(source_code)
+    collected_tokens, lexical_errors = _collect_tokens(source_code)
+    lexical_tokens = collected_tokens if include_tokens else []
 
     parser = PhpParser()
     syntactic_errors, semantic_errors = parser.parse(source_code)
     all_syntactic_errors = [*lexical_errors, *syntactic_errors]
+    semantic_skipped = bool(all_syntactic_errors)
 
-    if all_syntactic_errors:
+    if semantic_skipped:
         semantic_errors = []
 
     status = _derive_status(all_syntactic_errors, semantic_errors)
@@ -85,5 +84,6 @@ def analyze_php(source_code: str, include_tokens: bool = True) -> AnalysisResult
         tokens=lexical_tokens,
         syntactic_errors=all_syntactic_errors,
         semantic_errors=semantic_errors,
+        semantic_skipped=semantic_skipped,
         meta=AnalysisMeta(elapsed_ms=elapsed_ms, source_length=len(source_code)),
     )

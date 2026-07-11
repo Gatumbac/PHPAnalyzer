@@ -27,6 +27,7 @@ export interface AnalyzeResponse {
   tokens: TokenInfo[];
   syntactic_errors: AnalysisError[];
   semantic_errors: AnalysisError[];
+  semantic_skipped: boolean;
   meta: AnalysisMeta;
 }
 

@@ -6,14 +6,14 @@ type SectionKey = "lexico" | "sintactico" | "semantico";
 
 interface InspectorPanelProps {
   result: AnalyzeResponse | null;
+  includeTokens: boolean;
   sectionsOpen: Record<SectionKey, boolean>;
-  activeSection: SectionKey | null;
   onToggleSection: (section: SectionKey) => void;
 }
 
-function ErrorList({ errors }: { errors: AnalysisError[] }) {
+function ErrorList({ errors, emptyMessage = "Sin errores." }: { errors: AnalysisError[]; emptyMessage?: string }) {
   if (errors.length === 0) {
-    return <p className="text-xs text-ok">Sin errores.</p>;
+    return <p className="text-xs text-ok">{emptyMessage}</p>;
   }
 
   return (
@@ -21,7 +21,7 @@ function ErrorList({ errors }: { errors: AnalysisError[] }) {
       {errors.map((error, idx) => (
         <li key={`${error.code}-${idx}`} className="rounded border border-error/40 bg-error/10 p-2 text-error">
           <p>{error.message}</p>
-          <p className="mt-1 text-[11px] text-muted">Codigo: {error.code}</p>
+          <p className="mt-1 text-[11px] text-muted">Código: {error.code}</p>
         </li>
       ))}
     </ul>
@@ -32,19 +32,17 @@ function SectionCard({
   title,
   section,
   isOpen,
-  isActive,
   onToggle,
   children,
 }: {
   title: string;
   section: SectionKey;
   isOpen: boolean;
-  isActive: boolean;
   onToggle: (section: SectionKey) => void;
   children: ReactNode;
 }) {
   return (
-    <article className={`rounded-lg border ${isActive ? "border-accent" : "border-border"} bg-panelAlt`}>
+    <article className="rounded-lg border border-border bg-panelAlt">
       <button
         type="button"
         onClick={() => onToggle(section)}
@@ -58,7 +56,7 @@ function SectionCard({
   );
 }
 
-export function InspectorPanel({ result, sectionsOpen, activeSection, onToggleSection }: InspectorPanelProps) {
+export function InspectorPanel({ result, includeTokens, sectionsOpen, onToggleSection }: InspectorPanelProps) {
   const syntacticErrors = result?.syntactic_errors ?? [];
   const semanticErrors = result?.semantic_errors ?? [];
   const lexicalErrors = syntacticErrors.filter((error) => error.phase === "lexical");
@@ -70,39 +68,44 @@ export function InspectorPanel({ result, sectionsOpen, activeSection, onToggleSe
       <div className="rounded border border-border bg-panelAlt px-3 py-2">
         <p className="text-xs text-muted">Estado</p>
         <p className="text-sm font-semibold text-text">
-          {result ? "Analisis completado" : "Esperando codigo..."}
+          {result ? "Análisis completado" : "Esperando código..."}
         </p>
       </div>
 
       <SectionCard
-        title="Lexico"
+        title="Léxico"
         section="lexico"
         isOpen={sectionsOpen.lexico}
-        isActive={activeSection === "lexico"}
         onToggle={onToggleSection}
       >
-        {lexicalErrors.length > 0 ? <ErrorList errors={lexicalErrors} /> : null}
-        {shouldShowTokens ? <TokenTable tokens={result.tokens} /> : <p className="text-xs text-muted">No hay tokens para mostrar.</p>}
+        <div className="space-y-3">
+          {lexicalErrors.length > 0 ? <ErrorList errors={lexicalErrors} /> : null}
+          {includeTokens ? (
+            shouldShowTokens ? <TokenTable tokens={result.tokens} /> : <p className="text-xs text-muted">No hay tokens para mostrar.</p>
+          ) : null}
+          {lexicalErrors.length === 0 && !includeTokens ? <p className="text-xs text-ok">Sin errores.</p> : null}
+        </div>
       </SectionCard>
 
       <SectionCard
-        title="Sintactico"
+        title="Sintáctico"
         section="sintactico"
         isOpen={sectionsOpen.sintactico}
-        isActive={activeSection === "sintactico"}
         onToggle={onToggleSection}
       >
         <ErrorList errors={syntacticErrors.filter((error) => error.phase === "syntactic")} />
       </SectionCard>
 
       <SectionCard
-        title="Semantico"
+        title="Semántico"
         section="semantico"
         isOpen={sectionsOpen.semantico}
-        isActive={activeSection === "semantico"}
         onToggle={onToggleSection}
       >
-        <ErrorList errors={semanticErrors} />
+        <ErrorList
+          errors={semanticErrors}
+          emptyMessage={result?.semantic_skipped ? "No ejecutado debido a errores sintácticos." : undefined}
+        />
       </SectionCard>
     </aside>
   );
