@@ -35,6 +35,31 @@ if ($edad >= 18 {
         self.assertGreater(len(result.syntactic_errors), 0)
         self.assertEqual(result.status, "syntax_error")
         self.assertEqual(result.syntactic_errors[0].phase, "syntactic")
+        self.assertTrue(result.semantic_skipped)
+        self.assertEqual(result.semantic_errors, [])
+
+    def test_syntax_errors_keep_the_context_of_common_mistakes(self):
+        source = """<?php
+$valor = 100
+if $edad > 18 {
+    echo "Mayor";
+}
+$contador += ;
+$diccionario = ["clave1" => 1 ; "clave2" => 2];
+?>"""
+        result = analyze_php(source, include_tokens=False)
+
+        self.assertEqual(len(result.syntactic_errors), 4)
+        self.assertEqual(
+            [error.code for error in result.syntactic_errors],
+            [
+                "SYN_MISSING_SEMICOLON",
+                "SYN_MISSING_IF_PARENTHESES",
+                "SYN_MISSING_COMPOUND_EXPRESSION",
+                "SYN_ARRAY_SEPARATOR",
+            ],
+        )
+        self.assertIn("falta el delimitador ';'", result.syntactic_errors[0].message)
 
     def test_semantic_type_compatibility_detection(self):
         source = """<?php
@@ -76,6 +101,7 @@ function validar() {
         self.assertIsInstance(result.tokens, list)
         self.assertIsInstance(result.syntactic_errors, list)
         self.assertIsInstance(result.semantic_errors, list)
+        self.assertIsInstance(result.semantic_skipped, bool)
         self.assertIsInstance(result.meta.elapsed_ms, int)
         self.assertEqual(result.meta.source_length, len(source))
         self.assertEqual(result.meta.analyzer_version, "1.0.0")

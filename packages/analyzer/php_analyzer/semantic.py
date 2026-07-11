@@ -18,7 +18,7 @@ class SemanticAnalyzer:
                     phase="semantic",
                     line=lineno,
                     code="SEM_UNINITIALIZED_VARIABLE",
-                    message=f"Error Semantico en linea {lineno}: La variable '{name}' no ha sido inicializada.",
+                    message=f"Error semántico en línea {lineno}: la variable '{name}' no ha sido inicializada.",
                 )
             )
 
@@ -35,7 +35,7 @@ class SemanticAnalyzer:
                     phase="semantic",
                     line=lineno,
                     code="SEM_BREAK_OUTSIDE_LOOP",
-                    message=f"Error Semantico en linea {lineno}: 'break' no puede usarse fuera de un bucle.",
+                    message=f"Error semántico en línea {lineno}: 'break' no puede usarse fuera de un bucle.",
                 )
             )
 
@@ -55,7 +55,7 @@ class SemanticAnalyzer:
                     phase="semantic",
                     line=lineno,
                     code="SEM_INCOMPATIBLE_ARITHMETIC_TYPES",
-                    message=f'Error Semantico en linea {lineno}: Tipos incompatibles para la operacion "{operator}".',
+                    message=f'Error semántico en línea {lineno}: tipos incompatibles para la operación "{operator}".',
                 )
             )
 
@@ -67,7 +67,7 @@ class SemanticAnalyzer:
                     phase="semantic",
                     line=lineno,
                     code="SEM_FUNCTION_REDECLARATION",
-                    message=f"Error Semantico en linea {lineno}: La funcion '{name}' ya ha sido declarada previamente.",
+                    message=f"Error semántico en línea {lineno}: la función '{name}' ya ha sido declarada previamente.",
                 )
             )
         else:

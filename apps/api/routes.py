@@ -30,5 +30,5 @@ def analyze(payload: AnalyzeRequest) -> AnalyzeResponse:
         logger.exception("Error interno en /analyze [request_id=%s]: %s", request_id, exc)
         raise HTTPException(
             status_code=500,
-            detail=f"Error interno durante el analisis. request_id={request_id}",
+            detail=f"Error interno durante el análisis. request_id={request_id}",
         ) from exc

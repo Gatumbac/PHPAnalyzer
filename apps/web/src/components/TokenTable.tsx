@@ -16,7 +16,7 @@ export function TokenTable({ tokens }: TokenTableProps) {
           <tr className="text-left text-muted">
             <th className="px-3 py-2">Token</th>
             <th className="px-3 py-2">Lexema</th>
-            <th className="px-3 py-2">Linea</th>
+            <th className="px-3 py-2">Línea</th>
             <th className="px-3 py-2">Columna</th>
           </tr>
         </thead>
