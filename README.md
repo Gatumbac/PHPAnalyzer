@@ -2,6 +2,8 @@
 
 Analizador léxico, sintáctico y semántico para código PHP desarrollado en Python usando [PLY (Python Lex-Yacc)](https://www.dabeaz.com/ply/).
 
+Setup Local: [SETUP](./docs/SETUP.md)
+
 ## Descripción
 
 PHPAnalyzer tokeniza y analiza archivos PHP en tres fases:
