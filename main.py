@@ -7,7 +7,7 @@ def run_analyzer():
 
     algorithms = [
         ("tests/algorithm_darwin.php", "DarwinDiaz"),
-        #("tests/algorithm_gabriel.php", "GabrielTumbaco"),
+        ("tests/algorithm_gabriel.php", "GabrielTumbaco"),
     ]
 
     for path_str, member in algorithms:
