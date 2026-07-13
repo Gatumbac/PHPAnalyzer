@@ -48,7 +48,6 @@ class PhpLexer:
         "LBRACKET",
         "RBRACKET",
         "COMMA",
-        "COLON",
         "ARROW",
         "PHP_OPEN",
         "PHP_CLOSE",
@@ -83,7 +82,6 @@ class PhpLexer:
     t_LBRACKET = r"\["
     t_RBRACKET = r"\]"
     t_COMMA = r","
-    t_COLON = r":"
 
     def __init__(self):
         self.lexer = lex.lex(module=self)
