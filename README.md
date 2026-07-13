@@ -27,7 +27,7 @@ Identifica los siguientes elementos léxicos:
 | `AND`, `OR`, `NOT` | Operadores lógicos | `&&`, `\|\|`, `!` |
 | `ASSIGN`, `PLUS_ASSIGN`, `MINUS_ASSIGN` | Operadores de asignación | `=`, `+=`, `-=` |
 | `SEMICOLON`, `LBRACE`, `RBRACE`, `LPAREN`, `RPAREN` | Delimitadores | `;`, `{`, `}`, `(`, `)` |
-| `LBRACKET`, `RBRACKET`, `COMMA`, `COLON`, `ARROW` | Delimitadores | `[`, `]`, `,`, `:`, `=>` |
+| `LBRACKET`, `RBRACKET`, `COMMA`, `ARROW` | Delimitadores | `[`, `]`, `,`, `=>` |
 | `PHP_OPEN`, `PHP_CLOSE` | Etiquetas PHP | `<?php`, `?>` |
 | `POST`, `READLINE` | Captura de datos | `$_POST`, `readline` |
 
@@ -144,6 +144,8 @@ result = analyze_php("<?php $x = 10 + 5; ?>")
 print(result.status)
 print(result.tokens[0])
 ```
+
+La implementación activa del analizador se encuentra en packages/analyzer/php_analyzer. La carpeta src conserva componentes del prototipo inicial; actualmente solo se utiliza src/utils/logger.py para la generación de logs desde el punto de entrada CLI.
 
 ## Integrantes
 

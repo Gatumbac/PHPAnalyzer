@@ -228,6 +228,7 @@ parsetab.py
 .agents 
 .codex 
 .claude 
+.opencode/memory/
 
 # Node
 node_modules/
